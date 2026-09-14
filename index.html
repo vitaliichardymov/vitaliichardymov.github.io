@@ -1,8 +1,5 @@
 <!doctype html>
-<html lang="ru">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <title>Your Yoga</title>
 <meta name="description" content="Your Yoga — коврики, пропсы, одежда и инвентарь для йоги и спорта">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -155,14 +152,17 @@ aside.filters{position:sticky;top:92px;display:grid;gap:28px}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(214px,1fr));gap:36px 22px}
 .card{display:flex;flex-direction:column;gap:12px;min-width:0}
-.tile{position:relative;aspect-ratio:5/4;border-radius:var(--r);background:color-mix(in oklab,var(--tile) 80%,var(--p,#888));overflow:hidden;border:0;padding:0;width:100%;display:block;transition:transform .35s ease}
+.tile{position:relative;aspect-ratio:1/1;border-radius:var(--r);background:color-mix(in oklab,var(--tile) 80%,var(--p,#888));overflow:hidden;border:0;padding:0;width:100%;display:block;transition:transform .35s ease}
 .tile svg{width:100%;height:100%;display:block;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
-.tile img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.tile img.photo,.matpic img.photo{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:contain;transition:transform .5s cubic-bezier(.2,.7,.2,1);z-index:1}
+.tile:has(img.photo),.matpic:has(img.photo){background:#F7F7F4}
+.thumb img{object-fit:contain;background:#F7F7F4}
+.matpic{position:relative}
 .card:hover .tile svg,.card:hover .tile img{transform:scale(1.04)}
-.badges{position:absolute;left:10px;top:10px;display:flex;gap:6px}
+.badges{position:absolute;left:10px;top:10px;display:flex;gap:6px;z-index:2}
 .badge{font-size:.6875rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:6px;background:var(--raise);color:var(--ink)}
 .badge.sale{background:var(--sale);color:var(--bg)}
-.fav{position:absolute;right:8px;top:8px;width:36px;height:36px;border-radius:50%;border:0;display:grid;place-items:center;background:color-mix(in oklab,var(--raise) 80%,transparent);color:var(--ink)}
+.fav{position:absolute;right:8px;top:8px;z-index:2;width:36px;height:36px;border-radius:50%;border:0;display:grid;place-items:center;background:color-mix(in oklab,var(--raise) 80%,transparent);color:var(--ink)}
 .fav svg{width:18px;height:18px}
 .fav[aria-pressed="true"] svg{fill:var(--sale);stroke:var(--sale)}
 .card .meta{display:grid;gap:4px}
@@ -186,17 +186,23 @@ aside.filters{position:sticky;top:92px;display:grid;gap:28px}
 .guide .head{display:grid;grid-template-columns:1fr 1fr;gap:24px 48px;align-items:end;margin-bottom:40px}
 .guide h2{font-size:clamp(1.75rem,3vw,2.25rem)}
 .guide .head p{color:var(--muted);max-width:52ch}
-.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.scale{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .mm{border:1px solid var(--line);background:var(--bg);border-radius:var(--r);padding:20px 18px;text-align:left;display:grid;gap:14px;align-content:start;transition:border-color .2s,transform .2s}
 .mm:hover{border-color:var(--accent);transform:translateY(-2px)}
 .mm[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-.slab{height:48px;display:flex;align-items:flex-end}
-.slab i{display:block;width:100%;border-radius:3px;background:linear-gradient(180deg,color-mix(in oklab,var(--accent) 55%,var(--bg)),var(--accent))}
-.mm .v{font-family:var(--f-display);font-size:2rem;line-height:1}
-.mm .v small{font-family:var(--f-mono);font-size:.8125rem;color:var(--muted);margin-left:4px}
+.matpic{display:block;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:color-mix(in oklab,var(--tile) 80%,var(--p,#888))}
+.matpic svg{width:100%;height:100%;display:block}
+.mm .v{font-family:var(--f-display);font-size:1.5rem;line-height:1}
 .mm .t{font-weight:600}
 .mm .d{color:var(--muted);font-size:.875rem}
 .mm .n{color:var(--accent);font-size:.8125rem;font-weight:500}
+.gallery{display:flex;flex-direction:column;gap:10px;padding:0;background:transparent;min-width:0}
+.gallery .tile{flex:1;min-height:340px}
+.thumbs{display:flex;gap:8px;padding:0 14px 14px;flex-wrap:wrap}
+.thumb{width:56px;height:56px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:var(--tile);padding:0}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.sz[disabled]{opacity:.35;cursor:not-allowed;text-decoration:line-through}
 @media (max-width:900px){.guide .head{grid-template-columns:1fr}.scale{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}}
 
 /* service */
@@ -220,7 +226,8 @@ dialog::backdrop{background:rgba(14,22,18,.45);backdrop-filter:blur(3px)}
 .x{position:absolute;right:14px;top:14px;z-index:2}
 #product-dlg{width:min(980px,calc(100% - 32px));max-height:calc(100% - 32px);border-radius:20px}
 .pd{display:grid;grid-template-columns:1.05fr 1fr}
-.pd .tile{aspect-ratio:auto;height:100%;min-height:420px;border-radius:0}
+.pd .tile{aspect-ratio:auto;height:100%;min-height:380px;border-radius:0}
+.pd .gallery .tile{border-radius:0}
 .pd .info{padding:36px 36px 32px;display:grid;gap:18px;align-content:start;overflow:auto;max-height:calc(100vh - 32px)}
 .pd h2{font-size:1.875rem;line-height:1.15;padding-right:36px}
 .pd .price b{font-size:1.5rem}
@@ -248,7 +255,7 @@ dialog::backdrop{background:rgba(14,22,18,.45);backdrop-filter:blur(3px)}
 .for span{font-size:.8125rem;padding:4px 10px;border-radius:999px;background:var(--accent-soft)}
 .note{font-size:.875rem;color:var(--muted);display:flex;gap:8px;align-items:center}
 .note svg{width:18px;height:18px;color:var(--accent);flex:none}
-@media (max-width:760px){.pd{grid-template-columns:1fr}.pd .tile{min-height:0;aspect-ratio:5/4}.pd .info{padding:24px 20px;max-height:none}#product-dlg{overflow:auto}}
+@media (max-width:760px){.pd{grid-template-columns:1fr}.pd .tile,.pd .gallery .tile{min-height:0;aspect-ratio:1/1}.pd .info{padding:24px 20px;max-height:none}#product-dlg{overflow:auto}}
 
 #cart-dlg{margin:0 0 0 auto;height:100%;max-height:100%;width:min(440px,100%);border-radius:20px 0 0 20px;display:none;flex-direction:column}
 #cart-dlg[open]{display:flex;animation:slide .28s cubic-bezier(.2,.7,.2,1)}
@@ -319,7 +326,6 @@ dialog::backdrop{background:rgba(14,22,18,.45);backdrop-filter:blur(3px)}
 .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 .toast button{border:0;background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 12px;font-weight:500;font-size:.875rem;white-space:nowrap}
 </style>
-</head>
 <body>
 
 <div class="strip"><div class="wrap"><span>Бесплатная доставка от 5 000 ₽ по всей России</span><span>Промокод <b>ДЫШИ</b> — −10% на первый заказ</span></div></div>
@@ -333,7 +339,7 @@ dialog::backdrop{background:rgba(14,22,18,.45);backdrop-filter:blur(3px)}
     <nav class="main" aria-label="Разделы">
       <a href="#catalog" data-cat="all">Каталог</a>
       <a href="#catalog" data-cat="mats">Коврики</a>
-      <a href="#guide">Подбор коврика</a>
+      <a href="#guide">О ковриках</a>
       <a href="#service">Доставка и оплата</a>
     </nav>
     <div class="top-actions">
@@ -355,10 +361,10 @@ dialog::backdrop{background:rgba(14,22,18,.45);backdrop-filter:blur(3px)}
       <div>
         <p class="eyebrow">Йога · фитнес · восстановление</p>
         <h1>Вещи для практики, которые не отвлекают</h1>
-        <p class="lead">Коврики из каучука и пробки, пропсы, одежда и инвентарь для силовых тренировок. Отбираем вместе с инструкторами и доставляем за 1–3 дня.</p>
+        <p class="lead">Коврики из натурального каучука с авторскими принтами, чехлы, противоскользящие носки и одежда для практики. Своё производство и своя марка — Your Yoga.</p>
         <div class="cta">
           <a class="btn btn-primary" href="#catalog">Смотреть каталог</a>
-          <a class="btn btn-ghost" href="#guide">Подобрать коврик</a>
+          <a class="btn btn-ghost" href="#guide">Выбрать коврик</a>
         </div>
       </div>
       <div class="breath" aria-hidden="true">
@@ -409,8 +415,8 @@ dialog::backdrop{background:rgba(14,22,18,.45);backdrop-filter:blur(3px)}
             <h3>Цена</h3>
             <div class="range">
               <label class="visually-hidden" for="price">Цена до</label>
-              <input type="range" id="price" min="500" max="9000" step="100" value="9000">
-              <div class="vals mono num"><span id="price-min">от 690 ₽</span><span id="price-val">до 9 000 ₽</span></div>
+              <input type="range" id="price" min="700" max="9000" step="100" value="9000">
+              <div class="vals mono num"><span id="price-min">от 700 ₽</span><span id="price-val">до 9 000 ₽</span></div>
             </div>
           </div>
           <div class="fgroup">
@@ -434,10 +440,10 @@ dialog::backdrop{background:rgba(14,22,18,.45);backdrop-filter:blur(3px)}
     <div class="wrap">
       <div class="head">
         <div>
-          <p class="eyebrow">Подбор коврика</p>
-          <h2 style="margin-top:10px">Толщина решает больше, чем цвет</h2>
+          <p class="eyebrow">Коврики Your Yoga</p>
+          <h2 style="margin-top:10px">Четыре коврика — четыре характера</h2>
         </div>
-        <p>Тонкий коврик лучше чувствует пол и держит баланс в стоячих асанах. Толстый бережёт колени и позвоночник в долгих позах лёжа. Нажмите на толщину, и мы покажем подходящие коврики.</p>
+        <p>Все коврики из натурального каучука: цепкое покрытие, разметка для выравнивания асан и принты, нарисованные для нас художниками. Тонкий Ethno Travel складывается в чемодан, Lion и Tibet Mandala рассчитаны на ежедневную практику. Нажмите на коврик, чтобы открыть карточку.</p>
       </div>
       <div class="scale" id="scale"></div>
     </div>
@@ -447,7 +453,7 @@ dialog::backdrop{background:rgba(14,22,18,.45);backdrop-filter:blur(3px)}
     <div class="wrap">
       <div><span class="k">1–3 дня</span><h3>Доставка</h3><p>Курьером по Москве и Санкт-Петербургу, в пункты СДЭК по всей России.</p></div>
       <div><span class="k">5 000 ₽</span><h3>Бесплатно от этой суммы</h3><p>Для курьера и пунктов выдачи. Ниже — 290–390 ₽.</p></div>
-      <div><span class="k">30 дней</span><h3>На возврат</h3><p>Если коврик не подошёл по ощущениям, заберём даже распакованный.</p></div>
+      <div><span class="k">3 месяца</span><h3>Гарантия</h3><p>На коврики, сумки и одежду собственного производства.</p></div>
       <div><span class="k">СБП</span><h3>Оплата</h3><p>Картой онлайн, по СБП или при получении — наличными и картой.</p></div>
     </div>
   </section>
@@ -457,10 +463,10 @@ dialog::backdrop{background:rgba(14,22,18,.45);backdrop-filter:blur(3px)}
   <div class="wrap">
     <div>
       <a class="logo" href="#top"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="16" cy="16" r="14"/><circle cx="16" cy="16" r="8.5"/><circle cx="16" cy="16" r="3" fill="currentColor" stroke="none"/></svg>Your Yoga</a>
-      <p style="margin-top:12px;max-width:34ch">Снаряжение для йоги и спорта. Спокойно, бережно, по делу.</p>
+      <p style="margin-top:12px;max-width:34ch">Коврики, чехлы, носки и одежда для практики. Своя марка, своё производство.</p>
     </div>
     <div class="cols">
-      <div><b>Покупателям</b><a href="#service">Доставка и оплата</a><a href="#service">Возврат</a><a href="#guide">Как выбрать коврик</a></div>
+      <div><b>Покупателям</b><a href="#service">Доставка и оплата</a><a href="#service">Возврат</a><a href="#guide">Коврики</a></div>
       <div><b>Связаться</b><span>hello@your-yoga.ru</span><span class="num">+7 900 000-00-00</span><span>Ежедневно 9:00–21:00</span></div>
     </div>
   </div>
@@ -633,8 +639,14 @@ const DRAW = {
       <rect x="101" y="30" width="38" height="26" rx="6" fill="#3A413E"/>
       <path d="M110 31 q10 -20 20 0" fill="none" stroke="#3A413E" stroke-width="5"/>`;
   },
-  leggings(c) {
+  leggings(c, o = {}) {
     const Dk = shade(c, -.3), L = shade(c, .25);
+    if (o.loose) return `<ellipse class="sh" cx="120" cy="164" rx="64" ry="5"/>
+      <path d="M74 42 L166 42 L176 150 L134 150 L121 84 L119 84 L106 150 L64 150 Z" fill="${c}"/>
+      <rect x="74" y="26" width="92" height="18" rx="5" fill="${Dk}"/>
+      <rect x="64" y="148" width="42" height="12" rx="5" fill="${Dk}"/>
+      <rect x="134" y="148" width="42" height="12" rx="5" fill="${Dk}"/>
+      <path d="M120 45 L120 84" stroke="${Dk}" stroke-width="1.5" opacity=".6"/>`;
     return `<ellipse class="sh" cx="120" cy="164" rx="60" ry="5"/>
       <path d="M80 42 L160 42 L168 160 L137 160 L121 80 L119 80 L103 160 L72 160 Z" fill="${c}"/>
       <rect x="80" y="28" width="80" height="17" rx="4" fill="${Dk}"/>
@@ -654,6 +666,50 @@ const DRAW = {
       <path d="M60 104 C 60 176, 180 176, 180 104" fill="none" stroke="#4A524E" stroke-width="3"/>
       <g transform="rotate(-16 56 76)"><rect x="47" y="44" width="18" height="62" rx="9" fill="${c}"/><rect x="47" y="96" width="18" height="10" rx="3" fill="${Dk}"/></g>
       <g transform="rotate(16 184 76)"><rect x="175" y="44" width="18" height="62" rx="9" fill="${c}"/><rect x="175" y="96" width="18" height="10" rx="3" fill="${Dk}"/></g>`;
+  },
+  matbag(c, o = {}) {
+    const L = shade(c, .22), Dk = shade(c, -.3), h = o.slim ? 44 : 54;
+    return `<ellipse class="sh" cx="124" cy="152" rx="92" ry="8"/>
+      <g transform="rotate(-18 120 96)">
+        <rect x="26" y="${96 - h / 2}" width="188" height="${h}" rx="${h / 2}" fill="${c}"/>
+        <rect x="26" y="${96 - h / 2 + 6}" width="188" height="6" fill="${L}" opacity=".45"/>
+        <path d="M44 ${96 + h / 2 - 12} H196" stroke="${Dk}" stroke-width="3" stroke-dasharray="7 5"/>
+        <rect x="120" y="${96 - h / 2 + 10}" width="52" height="${h - 20}" rx="6" fill="${Dk}" opacity=".35"/>
+      </g>
+      <path d="M58 64 C 12 104, 56 156, 156 140" fill="none" stroke="${Dk}" stroke-width="7" stroke-linecap="round"/>`;
+  },
+  runbag(c, o = {}) {
+    const L = shade(c, .25), Dk = shade(c, -.3);
+    if (o.arm) return `<ellipse class="sh" cx="120" cy="150" rx="66" ry="7"/>
+      <path d="M74 66 q46 -16 92 0 l8 52 q-54 18 -108 0 z" fill="${c}"/>
+      <path d="M82 92 h76" stroke="${Dk}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M84 118 q36 30 72 0" fill="none" stroke="${Dk}" stroke-width="12" stroke-linecap="round" opacity=".8"/>
+      <path d="M96 70 q24 -10 48 0" fill="none" stroke="${L}" stroke-width="3" opacity=".6"/>`;
+    return `<ellipse class="sh" cx="120" cy="150" rx="84" ry="7"/>
+      <rect x="14" y="94" width="60" height="14" rx="7" fill="${Dk}"/>
+      <rect x="166" y="94" width="60" height="14" rx="7" fill="${Dk}"/>
+      <path d="M58 74 q62 -24 124 0 l12 54 q-74 26 -148 0 z" fill="${c}"/>
+      <path d="M68 100 h104" stroke="${Dk}" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="176" cy="100" r="5" fill="${L}"/>
+      <path d="M78 78 q42 -14 84 0" fill="none" stroke="${L}" stroke-width="3" opacity=".55"/>`;
+  },
+  tshirt(c, o = {}) {
+    const Dk = shade(c, -.28), L = shade(c, .3);
+    const hood = o.hood ? `<path d="M96 34 q24 26 48 0 q-6 -20 -24 -20 q-18 0 -24 20 z" fill="${Dk}"/>` : "";
+    const pocket = o.hood ? `<path d="M92 104 h56 v22 h-56 z" fill="${Dk}" opacity=".5"/><path d="M110 40 v22 M130 40 v22" stroke="${L}" stroke-width="3" stroke-linecap="round"/>` : "";
+    return `<ellipse class="sh" cx="120" cy="146" rx="62" ry="5"/>
+      <path d="M96 30 L84 34 L52 54 L66 78 L82 68 L82 136 L158 136 L158 68 L174 78 L188 54 L156 34 L144 30 q-24 18 -48 0 z" fill="${c}"/>
+      ${hood}
+      <circle cx="120" cy="92" r="16" fill="${L}" opacity=".55"/>
+      ${pocket}`;
+  },
+  vest(c) {
+    const Dk = shade(c, -.3), L = shade(c, .28);
+    return `<ellipse class="sh" cx="120" cy="146" rx="54" ry="5"/>
+      <path d="M96 30 L74 40 L66 92 L82 96 L82 138 L158 138 L158 96 L174 92 L166 40 L144 30 q-24 18 -48 0 z" fill="${c}"/>
+      <path d="M120 44 V138" stroke="${Dk}" stroke-width="4"/>
+      <path d="M96 30 q24 18 48 0" fill="none" stroke="${L}" stroke-width="3" opacity=".6"/>
+      <path d="M86 60 h14 M140 60 h14" stroke="${L}" stroke-width="2" opacity=".4"/>`;
   },
   spray(c) {
     const L = shade(c, .45), Dk = shade(c, -.3);
@@ -683,11 +739,12 @@ const DRAW = {
       <rect x="54" y="87" width="132" height="2" fill="${c}" opacity=".8"/>`;
   }
 };
-function art(p, colorIdx = 0) {
-  const photo = (p.photos && p.photos[colorIdx]) || p.photo;
-  if (photo) return `<img src="${esc(photo)}" alt="${esc(p.name)}" loading="lazy">`;
+function art(p, colorIdx = 0, photoIdx = 0) {
   const c = p.colors[colorIdx].hex;
-  return `<svg viewBox="0 0 240 180" aria-hidden="true">${DRAW[p.draw](c, p.drawOpt || {})}</svg>`;
+  const drawing = `<svg viewBox="0 0 240 180" aria-hidden="true">${DRAW[p.draw](c, p.drawOpt || {})}</svg>`;
+  const photo = photoOf(p, colorIdx, photoIdx);
+  // фотография лежит поверх рисунка; если файла ещё нет, остаётся рисунок
+  return photo ? `<img class="photo" src="${esc(photo)}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">` + drawing : drawing;
 }
 
 /* ==========================================================================
@@ -709,131 +766,1904 @@ function art(p, colorIdx = 0) {
              one photo per color, same order as colors
    Without a photo the shop draws the built-in illustration (draw: "...").
    ========================================================================== */
-const CATS = [
-  { id: "mats", name: "Коврики" },
-  { id: "props", name: "Пропсы для йоги" },
-  { id: "calm", name: "Медитация и восстановление" },
-  { id: "fit", name: "Сила и фитнес" },
-  { id: "wear", name: "Одежда" },
-  { id: "acc", name: "Аксессуары" }
-];
-const PRACTICES = ["Хатха", "Виньяса", "Инь", "Пилатес", "Силовые", "Бег", "Медитация"];
-const C = {
-  moss: { name: "Мох", hex: "#5F7F66" }, graphite: { name: "Графит", hex: "#3E4642" }, sand: { name: "Песок", hex: "#CBB58F" },
-  euc: { name: "Эвкалипт", hex: "#4E7F72" }, black: { name: "Чёрный", hex: "#2B302E" }, lav: { name: "Лаванда", hex: "#9C8FB5" },
-  cork: { name: "Пробка", hex: "#C49A64" }, mist: { name: "Туман", hex: "#9FB4B0" }, powder: { name: "Пудра", hex: "#C9A7A3" },
-  olive: { name: "Олива", hex: "#7C8A5A" }, indigo: { name: "Индиго", hex: "#3F4E6B" }, khaki: { name: "Хаки", hex: "#6C7358" },
-  sage: { name: "Шалфей", hex: "#9DB5A0" }, lilac: { name: "Сирень", hex: "#B3A6C8" }, natural: { name: "Натуральный", hex: "#D9CBB0" },
-  linen: { name: "Лён", hex: "#CFC4AE" }, mustard: { name: "Горчица", hex: "#C4A04A" }, pine: { name: "Хвоя", hex: "#2F4F43" },
-  milk: { name: "Молочный", hex: "#E6E2D8" }, iron: { name: "Чугун", hex: "#2F3431" }
-};
-const SIZES = ["XS", "S", "M", "L", "XL"];
+const CATS = [{"id": "mats", "name": "Коврики"}, {"id": "bags", "name": "Сумки и чехлы"}, {"id": "socks", "name": "Носки для йоги"}, {"id": "wear", "name": "Одежда"}, {"id": "props", "name": "Пропсы и восстановление"}];
+const PRACTICES = ["Хатха", "Виньяса", "Инь", "Пилатес", "Танцы", "Бег", "Восстановление"];
 const PRODUCTS = [
-  { id: "koren", name: "Коврик «Корень»", cat: "mats", draw: "mat", thick: 4, price: 7490, pop: 1, badge: "Хит",
-    short: "4 мм · натуральный каучук", colors: [C.moss, C.graphite, C.sand], practices: ["Хатха", "Виньяса", "Силовые"],
-    desc: "Основа из натурального каучука не скользит даже на влажных ладонях, а плотный верхний слой держит форму в балансах. Подходит для ежедневной практики дома и в студии.",
-    specs: [["Материал", "натуральный каучук"], ["Толщина", "4 мм"], ["Размер", "183 × 66 см"], ["Вес", "2,5 кг"], ["Сцепление", "сухое и влажное"]] },
-  { id: "potok", name: "Коврик «Поток»", cat: "mats", draw: "mat", thick: 3, price: 6490, pop: 4, isNew: true, badge: "Новинка",
-    short: "3 мм · PU + каучук", colors: [C.euc, C.black, C.lav], practices: ["Виньяса", "Хатха"],
-    desc: "Полиуретановое покрытие впитывает влагу и цепко держит руки в собаке мордой вниз. Тонкий, чтобы чувствовать пол в динамичных связках.",
-    specs: [["Материал", "PU-покрытие, каучук"], ["Толщина", "3 мм"], ["Размер", "185 × 68 см"], ["Вес", "2,3 кг"], ["Разметка", "линии выравнивания"]] },
-  { id: "probka", name: "Коврик «Пробка»", cat: "mats", draw: "mat", drawOpt: { speck: true }, thick: 4, price: 8990, old: 9990, pop: 3,
-    short: "4 мм · пробка на каучуке", colors: [C.cork], practices: ["Хатха", "Виньяса", "Инь"],
-    desc: "Пробковое покрытие становится только цепче, когда вы потеете, и не впитывает запах. Каучуковое основание гасит вибрации и не сползает.",
-    specs: [["Материал", "пробковый дуб, каучук"], ["Толщина", "4 мм"], ["Размер", "183 × 61 см"], ["Вес", "2,8 кг"], ["Уход", "влажная салфетка"]] },
-  { id: "oblako", name: "Коврик «Облако»", cat: "mats", draw: "mat", drawOpt: { thick: true }, thick: 6, price: 3290, pop: 2,
-    short: "6 мм · TPE", colors: [C.mist, C.lav, C.powder], practices: ["Инь", "Пилатес", "Медитация"],
-    desc: "Мягкий двухслойный TPE для долгих поз лёжа и на коленях. Лёгкий — удобно носить на занятия, не боится воды.",
-    specs: [["Материал", "TPE, два слоя"], ["Толщина", "6 мм"], ["Размер", "183 × 61 см"], ["Вес", "1,1 кг"], ["Ремешок", "в комплекте"]] },
-  { id: "put", name: "Дорожный коврик «Путь»", cat: "mats", draw: "matFold", thick: 1.5, price: 4490, pop: 9,
-    short: "1,5 мм · складной", colors: [C.olive, C.graphite], practices: ["Хатха", "Виньяса"],
-    desc: "Складывается до размера книги и помещается в ручную кладь. Кладите поверх гостиничного ковра или на студийный коврик для гигиены.",
-    specs: [["Материал", "натуральный каучук, микрофибра"], ["Толщина", "1,5 мм"], ["Размер", "180 × 61 см"], ["Вес", "0,9 кг"], ["В сложенном виде", "30 × 20 см"]] },
-  { id: "opora", name: "Коврик «Опора»", cat: "mats", draw: "mat", drawOpt: { thick: true, strap: true }, thick: 8, price: 2490, pop: 7,
-    short: "8 мм · NBR", colors: [C.indigo, C.khaki], practices: ["Силовые", "Пилатес"],
-    desc: "Толстый амортизирующий коврик для пресса, растяжки и функционального тренинга. Бережёт позвоночник на жёстком полу.",
-    specs: [["Материал", "NBR-каучук"], ["Толщина", "8 мм"], ["Размер", "183 × 61 см"], ["Вес", "0,9 кг"], ["Ремешок", "в комплекте"]] },
-  { id: "block-cork", name: "Блок пробковый", cat: "props", draw: "block", drawOpt: { speck: true }, price: 1290, pop: 5,
-    short: "23 × 15 × 7,5 см", colors: [C.cork], practices: ["Хатха", "Инь", "Виньяса"],
-    desc: "Тяжелее и устойчивее вспененных блоков: не качается под ладонью в треугольнике и полумесяце. Скруглённые рёбра не давят на запястья.",
-    specs: [["Материал", "прессованная пробка"], ["Размер", "23 × 15 × 7,5 см"], ["Вес", "0,6 кг"]] },
-  { id: "block-eva", name: "Блоки EVA, 2 шт.", cat: "props", draw: "block", drawOpt: { two: true }, price: 990, pop: 8,
-    short: "23 × 15 × 7,5 см · пара", colors: [C.sage, C.lilac, C.graphite], practices: ["Хатха", "Инь", "Пилатес"],
-    desc: "Лёгкая пара блоков для новичков и для поддержки в восстановительных позах. Мягкая пена приятна для коленей.",
-    specs: [["Материал", "EVA-пена"], ["Размер", "23 × 15 × 7,5 см"], ["Вес пары", "0,4 кг"]] },
-  { id: "strap", name: "Ремень для йоги", cat: "props", draw: "strap", price: 690, pop: 10,
-    short: "250 см · хлопок", colors: [C.natural, C.moss], practices: ["Хатха", "Инь", "Пилатес"],
-    desc: "Плотный хлопковый ремень с металлическими D-кольцами: помогает дотянуться до стоп в наклонах и мягко раскрыть плечи.",
-    specs: [["Материал", "хлопок 100%"], ["Длина", "250 см"], ["Ширина", "3,8 см"], ["Застёжка", "два D-кольца"]] },
-  { id: "wheel", name: "Колесо для йоги", cat: "props", draw: "wheel", price: 2190, pop: 13, isNew: true, badge: "Новинка",
-    short: "Ø 32 см · до 150 кг", colors: [C.mist, C.graphite], practices: ["Виньяса", "Хатха"],
-    desc: "Раскрывает грудной отдел в прогибах и помогает безопасно освоить мост и колесо. Мягкая TPE-накладка не скользит.",
-    specs: [["Материал", "ABS-пластик, TPE"], ["Диаметр", "32 см"], ["Ширина", "13 см"], ["Нагрузка", "до 150 кг"]] },
-  { id: "bolster", name: "Болстер с лузгой гречихи", cat: "calm", draw: "bolster", price: 3490, pop: 6,
-    short: "65 × 20 см · гречневая лузга", colors: [C.linen, C.moss, C.indigo], practices: ["Инь", "Медитация"],
-    desc: "Держит форму под весом тела в восстановительных практиках и шавасане. Чехол из льна снимается и стирается.",
-    specs: [["Наполнитель", "лузга гречихи"], ["Чехол", "лён, съёмный"], ["Размер", "65 × 20 см"], ["Вес", "2,9 кг"]] },
-  { id: "zafu", name: "Подушка для медитации «Дзафу»", cat: "calm", draw: "zafu", price: 2790, pop: 11, stock: 3,
-    short: "Ø 33 см · высота 15 см", colors: [C.mustard, C.indigo, C.linen], practices: ["Медитация", "Инь"],
-    desc: "Приподнимает таз, чтобы колени опустились ниже бёдер, а спина стала ровной без усилия. Высоту можно регулировать через молнию.",
-    specs: [["Наполнитель", "лузга гречихи"], ["Чехол", "хлопок, съёмный"], ["Диаметр", "33 см"], ["Высота", "15 см"]] },
-  { id: "roller", name: "Массажный ролик", cat: "calm", draw: "roller", price: 1690, pop: 12,
-    short: "33 × 14 см · средняя жёсткость", colors: [C.euc, C.graphite], practices: ["Бег", "Силовые", "Пилатес"],
-    desc: "Рельефная поверхность разминает икры, бёдра и спину после бега и силовых. Полый корпус выдерживает до 250 кг.",
-    specs: [["Материал", "EVA на ABS-основе"], ["Размер", "33 × 14 см"], ["Жёсткость", "средняя"], ["Нагрузка", "до 250 кг"]] },
-  { id: "dumbbells", name: "Гантели неопреновые, 2 × 2 кг", cat: "fit", draw: "dumbbell", price: 1890, pop: 14,
-    short: "2 × 2 кг · шестигранные", colors: [C.sage, C.lilac], practices: ["Силовые", "Пилатес"],
-    desc: "Шестигранные — не укатятся с коврика. Неопреновое покрытие приятно держать и не царапает пол.",
-    specs: [["Вес", "2 × 2 кг"], ["Покрытие", "неопрен"], ["Сердечник", "чугун"], ["Форма", "шестигранник"]] },
-  { id: "kettlebell", name: "Гиря литая, 12 кг", cat: "fit", draw: "kettlebell", price: 3990, pop: 16, stock: 2,
-    short: "12 кг · чугун", colors: [C.iron], practices: ["Силовые"],
-    desc: "Цельнолитая гиря с гладкой ручкой для махов, рывков и приседаний. Порошковая покраска не скользит в ладони.",
-    specs: [["Вес", "12 кг"], ["Материал", "чугун"], ["Покрытие", "порошковая краска"], ["Ручка", "Ø 35 мм"]] },
-  { id: "bands", name: "Фитнес-резинки, 5 шт.", cat: "fit", draw: "bands", price: 1190, old: 1490, pop: 15,
-    short: "от 2 до 18 кг", colors: [{ name: "Набор", hex: "#77A591" }], practices: ["Силовые", "Пилатес", "Бег"],
-    desc: "Пять уровней сопротивления для ягодиц, плеч и разминки перед бегом. Латекс не рвётся и не скатывается по бедру.",
-    specs: [["Сопротивление", "2 / 5 / 8 / 12 / 18 кг"], ["Материал", "латекс"], ["Длина петли", "60 см"], ["Чехол", "в комплекте"]] },
-  { id: "ball", name: "Фитбол антивзрыв", cat: "fit", draw: "ball", price: 1990, pop: 17,
-    short: "Ø 65 см · насос в комплекте", colors: [C.mist, C.lilac, C.graphite], practices: ["Пилатес", "Силовые"],
-    desc: "Для пилатеса, упражнений на кор и мягкой растяжки спины. Система «антивзрыв»: при проколе сдувается постепенно.",
-    specs: [["Диаметр", "65 см"], ["Рост", "165–180 см"], ["Нагрузка", "до 300 кг"], ["В комплекте", "ручной насос"]] },
-  { id: "rope", name: "Скакалка скоростная", cat: "fit", draw: "rope", price: 890, pop: 19,
-    short: "3 м · подшипники", colors: [C.moss, C.graphite], practices: ["Бег", "Силовые"],
-    desc: "Стальной трос в оплётке и ручки на подшипниках — ровное быстрое вращение для кардио и двойных прыжков. Длина регулируется.",
-    specs: [["Длина", "до 3 м, регулируется"], ["Трос", "сталь в ПВХ-оплётке"], ["Ручки", "на подшипниках"]] },
-  { id: "leggings", name: "Легинсы «Тишина»", cat: "wear", draw: "leggings", price: 4290, old: 4990, pop: 18, sizes: SIZES,
-    short: "высокая посадка · 7/8", colors: [C.pine, C.graphite, C.lav], practices: ["Хатха", "Виньяса", "Пилатес", "Бег"],
-    desc: "Матовое полотно не просвечивает в наклонах, широкий пояс не скатывается. Длина 7/8 открывает щиколотку.",
-    specs: [["Состав", "нейлон 78%, эластан 22%"], ["Посадка", "высокая"], ["Длина", "7/8"], ["Уход", "стирка при 30 °C"]] },
-  { id: "top", name: "Топ «Дыхание»", cat: "wear", draw: "top", price: 2990, pop: 20, sizes: SIZES,
-    short: "средняя поддержка", colors: [C.pine, C.graphite, C.lav], practices: ["Хатха", "Виньяса", "Пилатес"],
-    desc: "Съёмные чашечки и мягкая резинка под грудью — не давит при глубоком дыхании. Перекрёстные бретели на спине.",
-    specs: [["Состав", "нейлон 78%, эластан 22%"], ["Поддержка", "средняя"], ["Чашечки", "съёмные"], ["Уход", "стирка при 30 °C"]] },
-  { id: "bottle", name: "Бутылка стальная", cat: "acc", draw: "bottle", price: 1490, pop: 21,
-    short: "750 мл · двойные стенки", colors: [C.pine, C.milk, C.lav], practices: ["Бег", "Силовые", "Виньяса"],
-    desc: "Держит воду холодной 24 часа, а чай горячим 12. Не пахнет, не конденсирует снаружи — можно класть в сумку рядом с ковриком.",
-    specs: [["Объём", "750 мл"], ["Материал", "сталь 18/8"], ["Холод / тепло", "24 / 12 ч"], ["Вес", "360 г"]] },
-  { id: "spray", name: "Спрей для коврика «Эвкалипт»", cat: "acc", draw: "spray", price: 690, pop: 23, isNew: true, badge: "Новинка",
-    short: "150 мл · эфирные масла", colors: [C.euc], practices: ["Хатха", "Виньяса", "Инь"],
-    desc: "Освежает коврик после практики: эвкалипт и чайное дерево на водной основе. Не оставляет скользкой плёнки на каучуке и пробке.",
-    specs: [["Объём", "150 мл"], ["Состав", "вода, масла эвкалипта и чайного дерева"], ["Подходит", "каучук, пробка, TPE"]] },
-  { id: "socks", name: "Носки нескользящие", cat: "wear", draw: "socks", price: 890, pop: 24, sizes: ["S", "M", "L"],
-    short: "силиконовая подошва · пара", colors: [C.lilac, C.graphite, C.sage], practices: ["Пилатес", "Инь", "Хатха"],
-    desc: "Силиконовые точки на стопе держат на гладком полу и реформере. Хлопок с бамбуком не перегревает ноги.",
-    specs: [["Состав", "хлопок 60%, бамбук 35%, эластан 5%"], ["Размеры", "S 35–37, M 38–40, L 41–43"], ["Подошва", "силиконовые точки"]] },
-  { id: "towel", name: "Полотенце для коврика", cat: "acc", draw: "towel", price: 1790, pop: 22,
-    short: "183 × 63 см · микрофибра", colors: [C.mist, C.sand], practices: ["Виньяса", "Хатха"],
-    desc: "Кладётся поверх коврика в горячей йоге: чем больше влаги, тем лучше сцепление. Силиконовые точки снизу не дают ему сползать.",
-    specs: [["Материал", "микрофибра, силикон"], ["Размер", "183 × 63 см"], ["Вес", "380 г"], ["Уход", "стирка при 40 °C"]] }
-];
-const byId = Object.fromEntries(PRODUCTS.map(p => [p.id, p]));
-const THICK = [
-  { mm: 1.5, t: "В дорогу", d: "Складывается в чемодан. Нужен ровный пол или второй коврик под низ." },
-  { mm: 3, t: "Динамика", d: "Виньяса и аштанга: чувствуете пол, стоите устойчиво в балансах." },
-  { mm: 4, t: "Универсальный", d: "Хатха и смешанные классы — баланс опоры и мягкости." },
-  { mm: 6, t: "Мягкость", d: "Инь, пилатес, практика на коленях и долгие позы лёжа." },
-  { mm: 8, t: "Амортизация", d: "Пресс, растяжка и функциональный тренинг на жёстком полу." }
-];
+ {
+  "id": "mat-lion",
+  "name": "Коврик для йоги Lion, каучук",
+  "cat": "mats",
+  "draw": "mat",
+  "pop": 1,
+  "practices": [
+   "Хатха",
+   "Виньяса",
+   "Инь"
+  ],
+  "short": "183 × 65 см · натуральный каучук",
+  "desc": "Представляем вашему вниманию коврик для йоги из каучука Lion. Этот стильный черный коврик станет незаменимым аксессуаром для занятий фитнесом и йогой. Он обеспечивает отличное сцепление с поверхностью, что позволяет вам сосредоточиться на выполнении упражнений без страха соскользнуть.",
+  "specs": [
+   [
+    "Длина",
+    "183 см"
+   ],
+   [
+    "Ширина",
+    "65 см"
+   ],
+   [
+    "Комплектация",
+    "Ремень-переноска"
+   ],
+   [
+    "Страна",
+    "Китай"
+   ],
+   [
+    "Гарантия",
+    "3 месяца"
+   ],
+   [
+    "Вес",
+    "2,3 кг"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   },
+   {
+    "name": "Тёмно-синий",
+    "hex": "#33405C"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 6700,
+    "old": 8500,
+    "sku": "Lion-2018-Black",
+    "photos": [
+     "images/mat-lion-1-1.jpg"
+    ]
+   },
+   {
+    "ci": 1,
+    "size": null,
+    "price": 9000,
+    "old": 17000,
+    "sku": "К-2018-LionBS",
+    "photos": [
+     "images/mat-lion-2-4.jpg",
+     "images/mat-lion-2-1.jpg",
+     "images/mat-lion-2-2.jpg",
+     "images/mat-lion-2-3.jpg"
+    ]
+   }
+  ],
+  "badge": "Хит"
+ },
+ {
+  "id": "mat-tibet",
+  "name": "Коврик для йоги Tibet Mandala",
+  "cat": "mats",
+  "draw": "mat",
+  "pop": 3,
+  "practices": [
+   "Хатха",
+   "Виньяса",
+   "Инь"
+  ],
+  "short": "4 мм · каучук · разметка",
+  "desc": "Коврик для йоги из натурального каучука с антискользящим покрытием премиум качества. Износостойкий, неприхотливый в уходе материал, отлично впитывает влагу и проветривается. Разметка на премиум-коврике позволяет качественно отстроить ваши асаны. Эксклюзивный принт выполнен лазером и точно не сотрется. Размер: 1830×650×4 мм. Дизайнер: Анастасия Андреева (Москва, Россия) специально по заказу «Your Yoga»",
+  "specs": [
+   [
+    "Длина",
+    "183 см"
+   ],
+   [
+    "Ширина",
+    "65 см"
+   ],
+   [
+    "Комплектация",
+    "Ремень-переноска или промо-чехол"
+   ],
+   [
+    "Страна",
+    "Китай"
+   ],
+   [
+    "Гарантия",
+    "3 месяца"
+   ],
+   [
+    "Вес",
+    "2,3 кг"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Синий",
+    "hex": "#3A5B8C"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 7500,
+    "old": 8500,
+    "sku": "К-2019-TMBS",
+    "photos": [
+     "images/mat-tibet-1-4.jpg",
+     "images/mat-tibet-1-1.jpg",
+     "images/mat-tibet-1-2.jpg",
+     "images/mat-tibet-1-3.jpg"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "mat-sunrise",
+  "name": "Коврик для йоги SunRise",
+  "cat": "mats",
+  "draw": "mat",
+  "pop": 4,
+  "practices": [
+   "Хатха",
+   "Виньяса"
+  ],
+  "short": "3 мм · каучук · принт",
+  "desc": "Коврик для йоги из натурального каучука с дизайнерским рисунком. Износостойкий, неприхотливый в уходе материал. Качественное покрытие с эксклюзивным принтом. В комплекте с ковриком инструкция по эксплуатации. Размер 1830×680×3 мм.",
+  "specs": [
+   [
+    "Длина",
+    "183 см"
+   ],
+   [
+    "Ширина",
+    "68 см"
+   ],
+   [
+    "Комплектация",
+    "Ремень переноска либо промо чехол."
+   ],
+   [
+    "Страна",
+    "Китай"
+   ],
+   [
+    "Гарантия",
+    "3 месяца"
+   ],
+   [
+    "Вес",
+    "2,3 кг"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Принт SunRise",
+    "hex": "#DE9A4E"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 6500,
+    "old": 8500,
+    "sku": "К-2023-SunRise",
+    "photos": [
+     "images/mat-sunrise-1-2.jpg",
+     "images/mat-sunrise-1-1.jpg"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "mat-ethno",
+  "name": "Тревел-коврик Ethno Travel",
+  "cat": "mats",
+  "draw": "matFold",
+  "pop": 6,
+  "practices": [
+   "Хатха",
+   "Виньяса"
+  ],
+  "short": "1 мм · тревел-коврик",
+  "desc": "Тонкий тревел коврик для йоги из натурального каучука с дизайнерским рисунком. Износостойкий, неприхотливый в уходе материал. Качественное покрытие с эксклюзивным принтом. В комплекте с ковриком инструкция по эксплуатации. Размер 1830×650×1 мм.",
+  "specs": [
+   [
+    "Длина",
+    "183 см"
+   ],
+   [
+    "Ширина",
+    "65 см"
+   ],
+   [
+    "Комплектация",
+    "Ремень переноска либо промо чехол."
+   ],
+   [
+    "Страна",
+    "Китай"
+   ],
+   [
+    "Гарантия",
+    "3 месяца"
+   ],
+   [
+    "Вес",
+    "2,3 кг"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Принт Ethno",
+    "hex": "#B87A50"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 6500,
+    "old": 15000,
+    "sku": "К-2019-МЕ",
+    "photos": [
+     "images/mat-ethno-1-3.jpg",
+     "images/mat-ethno-1-1.jpg",
+     "images/mat-ethno-1-2.jpg",
+     "images/mat-ethno-1-4.jpg"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "bag-70",
+  "name": "Сумка-чехол для коврика до 70 см",
+  "cat": "bags",
+  "draw": "matbag",
+  "pop": 2,
+  "practices": [
+   "Хатха",
+   "Виньяса",
+   "Инь"
+  ],
+  "short": "77 × 15 см · анатомические лямки",
+  "desc": "Эта стильная черная сумка чехол предназначена для удобной транспортировки ковриков для йоги шириной до 70 см. Она будет идеальным спутником для всех, кто ценит активный образ жизни и практикует йогу. Изготовленная из высококачественного материала, сумка защищает ваш коврик от загрязнений и повреждений, обеспечивая его долговечность.",
+  "specs": [
+   [
+    "Длина",
+    "77 см"
+   ],
+   [
+    "Ширина",
+    "15 см"
+   ],
+   [
+    "Высота",
+    "77 см"
+   ],
+   [
+    "Застёжка",
+    "Молния"
+   ],
+   [
+    "Особенности",
+    "Анатомические лямки"
+   ],
+   [
+    "Комплектация",
+    "Чехол"
+   ],
+   [
+    "Страна",
+    "Россия"
+   ],
+   [
+    "Гарантия",
+    "3 месяца"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   },
+   {
+    "name": "Голубой",
+    "hex": "#8FB6D6"
+   },
+   {
+    "name": "Оранжевый",
+    "hex": "#D9884B"
+   },
+   {
+    "name": "Светло-зелёный",
+    "hex": "#8FBF87"
+   },
+   {
+    "name": "Розовый",
+    "hex": "#DFA0B2"
+   },
+   {
+    "name": "Синий",
+    "hex": "#3A5B8C"
+   },
+   {
+    "name": "Тёмно-синий",
+    "hex": "#33405C"
+   },
+   {
+    "name": "Розовый, англ. надпись",
+    "hex": "#EBBAC5"
+   },
+   {
+    "name": "Чёрный, англ. надпись",
+    "hex": "#3A403C"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 2500,
+    "old": 7000,
+    "sku": "СК-2022-Ч",
+    "photos": [
+     "images/bag-70-1-1.jpg",
+     "images/bag-70-1-2.jpg",
+     "images/bag-70-1-3.jpg",
+     "images/bag-70-1-4.jpg"
+    ]
+   },
+   {
+    "ci": 1,
+    "size": null,
+    "price": 2500,
+    "old": 7000,
+    "sku": "СК-2022-Г",
+    "photos": [
+     "images/bag-70-2-1.jpg",
+     "images/bag-70-2-2.jpg"
+    ]
+   },
+   {
+    "ci": 2,
+    "size": null,
+    "price": 2500,
+    "old": 6000,
+    "sku": "СК-2023-О",
+    "photos": [
+     "images/bag-70-3-1.jpg",
+     "images/bag-70-3-2.jpg"
+    ]
+   },
+   {
+    "ci": 3,
+    "size": null,
+    "price": 2300,
+    "old": 6000,
+    "sku": "СК-2024-З",
+    "photos": [
+     "images/bag-70-4-1.jpg",
+     "images/bag-70-4-2.jpg",
+     "images/bag-70-4-3.jpg"
+    ]
+   },
+   {
+    "ci": 4,
+    "size": null,
+    "price": 2500,
+    "old": 6000,
+    "sku": "СК2-2023-Р",
+    "photos": [
+     "images/bag-70-5-3.jpg",
+     "images/bag-70-5-1.jpg",
+     "images/bag-70-5-2.jpg"
+    ]
+   },
+   {
+    "ci": 5,
+    "size": null,
+    "price": 2500,
+    "old": 7000,
+    "sku": "СК-2026-СРус",
+    "photos": [
+     "images/bag-70-6-1.jpg",
+     "images/bag-70-6-2.jpg"
+    ]
+   },
+   {
+    "ci": 6,
+    "size": null,
+    "price": 2300,
+    "old": 6000,
+    "sku": "СК-2024-С",
+    "photos": [
+     "images/bag-70-7-1.jpg"
+    ]
+   },
+   {
+    "ci": 7,
+    "size": null,
+    "price": 2500,
+    "old": 7000,
+    "sku": "СК-2025-РА",
+    "photos": [
+     "images/bag-70-8-1.jpg"
+    ]
+   },
+   {
+    "ci": 8,
+    "size": null,
+    "price": 2200,
+    "old": 5000,
+    "sku": "СК-2025-ЧИ",
+    "photos": [
+     "images/bag-70-9-1.jpg"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "bag-69",
+  "name": "Сумка для коврика 69 см, водоотталкивающая",
+  "cat": "bags",
+  "draw": "matbag",
+  "pop": 8,
+  "practices": [
+   "Хатха",
+   "Виньяса"
+  ],
+  "short": "69 × 13 см · водоотталкивающая",
+  "desc": "Размер: 69*15 см Цвет черный Особенности: водонепроницаемый.",
+  "specs": [
+   [
+    "Ширина",
+    "13 см"
+   ],
+   [
+    "Высота",
+    "15 см"
+   ],
+   [
+    "Застёжка",
+    "Молния"
+   ],
+   [
+    "Особенности",
+    "Водоотталкивающая пропитка"
+   ],
+   [
+    "Страна",
+    "Россия"
+   ],
+   [
+    "Гарантия",
+    "6 месяцев"
+   ],
+   [
+    "Вес",
+    "200 г"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   },
+   {
+    "name": "Серый",
+    "hex": "#8C938E"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 2200,
+    "old": 4500,
+    "sku": "yogabag-black",
+    "photos": [
+     "images/bag-69-1-2.jpg",
+     "images/bag-69-1-1.jpg",
+     "images/bag-69-1-3.jpg",
+     "images/bag-69-1-4.jpg"
+    ]
+   },
+   {
+    "ci": 1,
+    "size": null,
+    "price": 2200,
+    "old": 4500,
+    "sku": "02-2021-СС",
+    "photos": [
+     "images/bag-69-2-2.jpg",
+     "images/bag-69-2-1.jpg"
+    ]
+   }
+  ],
+  "drawOpt": {
+   "slim": true
+  }
+ },
+ {
+  "id": "runbag",
+  "name": "Сумка для бега на пояс",
+  "cat": "bags",
+  "draw": "runbag",
+  "pop": 5,
+  "practices": [
+   "Бег"
+  ],
+  "short": "поясная · 3 кармана · 98 г",
+  "desc": "Эта беговая сумка создана специально для того, чтобы обеспечить комфорт и удобство во время пробежек или тренировок на свежем воздухе. Незаменимый аксессуар для тех, кто ценит свободу движений и хочет, чтобы все необходимые мелочи всегда были под рукой. Сумка выполнена из высококачественных материалов, что делает её прочной и долговечной.",
+  "specs": [
+   [
+    "Застёжка",
+    "Молния"
+   ],
+   [
+    "Особенности",
+    "Водоотталкивающая пропитка"
+   ],
+   [
+    "Внешние карманы",
+    "3"
+   ],
+   [
+    "Страна",
+    "Россия"
+   ],
+   [
+    "Гарантия",
+    "3 месяца"
+   ],
+   [
+    "Вес",
+    "98 г"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   },
+   {
+    "name": "Чёрный, модель 2026",
+    "hex": "#3A403C"
+   },
+   {
+    "name": "Розовый",
+    "hex": "#EBBAC5"
+   },
+   {
+    "name": "Светло-серый",
+    "hex": "#C3C8C3"
+   },
+   {
+    "name": "Жёлтый",
+    "hex": "#DFB84A"
+   },
+   {
+    "name": "Бирюзовый",
+    "hex": "#4FA79B"
+   },
+   {
+    "name": "Оранжевый",
+    "hex": "#D9884B"
+   },
+   {
+    "name": "Тёмно-синий",
+    "hex": "#33405C"
+   },
+   {
+    "name": "Тёмно-розовый",
+    "hex": "#C2678A"
+   },
+   {
+    "name": "Синий",
+    "hex": "#3A5B8C"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 1300,
+    "old": 2700,
+    "sku": "СБ-2024-Ч",
+    "photos": [
+     "images/runbag-1-1.jpg"
+    ]
+   },
+   {
+    "ci": 1,
+    "size": null,
+    "price": 1400,
+    "old": 4000,
+    "sku": "СБ-2026Ч2",
+    "photos": [
+     "images/runbag-2-2.jpg",
+     "images/runbag-2-1.jpg"
+    ]
+   },
+   {
+    "ci": 2,
+    "size": null,
+    "price": 1300,
+    "old": 2500,
+    "sku": "СБ-2024-Р",
+    "photos": [
+     "images/runbag-3-2.jpg",
+     "images/runbag-3-1.jpg",
+     "images/runbag-3-3.jpg"
+    ]
+   },
+   {
+    "ci": 3,
+    "size": null,
+    "price": 1300,
+    "old": 2700,
+    "sku": "СБ-2025-G",
+    "photos": [
+     "images/runbag-4-2.jpg",
+     "images/runbag-4-1.jpg"
+    ]
+   },
+   {
+    "ci": 4,
+    "size": null,
+    "price": 1200,
+    "old": 3000,
+    "sku": "СБ-2025-Ж",
+    "photos": [
+     "images/runbag-5-1.jpg"
+    ]
+   },
+   {
+    "ci": 5,
+    "size": null,
+    "price": 1000,
+    "old": 2500,
+    "sku": "СБ-2025-М",
+    "photos": [
+     "images/runbag-6-1.jpg"
+    ]
+   },
+   {
+    "ci": 6,
+    "size": null,
+    "price": 1100,
+    "old": 2500,
+    "sku": "СБ-2025-О",
+    "photos": [
+     "images/runbag-7-1.jpg",
+     "images/runbag-7-2.jpg"
+    ]
+   },
+   {
+    "ci": 7,
+    "size": null,
+    "price": 1200,
+    "old": 3000,
+    "sku": "СБ-2025-ТC",
+    "photos": [
+     "images/runbag-8-1.jpg"
+    ]
+   },
+   {
+    "ci": 8,
+    "size": null,
+    "price": 1200,
+    "old": 3000,
+    "sku": "СБ-2025-ЯР",
+    "photos": [
+     "images/runbag-9-1.jpg",
+     "images/runbag-9-2.jpg"
+    ]
+   },
+   {
+    "ci": 9,
+    "size": null,
+    "price": 1200,
+    "old": 2500,
+    "sku": "СБ-С",
+    "photos": [
+     "images/runbag-10-2.jpg",
+     "images/runbag-10-1.jpg"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "armbag",
+  "name": "Сумка для бега на руку",
+  "cat": "bags",
+  "draw": "runbag",
+  "pop": 11,
+  "practices": [
+   "Бег"
+  ],
+  "short": "на руку · 2 кармана",
+  "desc": "Эта сумка изготовлена из высококачественных материалов, благодаря чему она обладает водонепроницаемой пропиткой, которая защитит ваши личные вещи от дождя или пота. Сумка имеет два внешних кармана, где вы можете хранить все необходимое для тренировки - ключи, телефон, кошелек. Застежка молния обеспечивает быстрое и удобное закрытие сумки.",
+  "specs": [
+   [
+    "Застёжка",
+    "Молния"
+   ],
+   [
+    "Особенности",
+    "Водоотталкивающая пропитка"
+   ],
+   [
+    "Внешние карманы",
+    "2"
+   ],
+   [
+    "Страна",
+    "Россия"
+   ],
+   [
+    "Гарантия",
+    "3 месяца"
+   ],
+   [
+    "Вес",
+    "100 г"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Белый",
+    "hex": "#EFEDE6"
+   },
+   {
+    "name": "Серебристый меланж",
+    "hex": "#B9BFBD"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 1200,
+    "old": 2500,
+    "sku": "СБР-2025-Ч",
+    "photos": [
+     "images/armbag-1-1.jpg",
+     "images/armbag-1-2.jpg"
+    ]
+   },
+   {
+    "ci": 1,
+    "size": null,
+    "price": 1300,
+    "old": 2700,
+    "sku": "СБР-2026-ЧП",
+    "photos": [
+     "images/armbag-2-3.jpg",
+     "images/armbag-2-1.jpg",
+     "images/armbag-2-2.jpg"
+    ]
+   }
+  ],
+  "drawOpt": {
+   "arm": true
+  }
+ },
+ {
+  "id": "vest",
+  "name": "Жилет для бега",
+  "cat": "wear",
+  "draw": "vest",
+  "pop": 16,
+  "practices": [
+   "Бег"
+  ],
+  "short": "лёгкая эластичная ткань",
+  "desc": "Жилет для бега - Легкая и эластичная ткань обеспечивает свободу движений и комфорт во время тренировок. - Прочные швы и вентиляционные зоны помогают сохранять оптимальную температуру тела. - Универсальный фасон подходит как для пробежек, так и для других активных занятий. - Минималистичный дизайн дополняет образ современного спортсмена без лишних деталей.",
+  "specs": [
+   [
+    "Вес",
+    "200 г"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 2000,
+    "old": 4200,
+    "sku": "СЖ-2026-Ч",
+    "photos": [
+     "images/vest-1-1.jpg"
+    ]
+   }
+  ],
+  "badge": "Новинка"
+ },
+ {
+  "id": "leggings",
+  "name": "Легинсы-тайтсы с сеткой",
+  "cat": "wear",
+  "draw": "leggings",
+  "pop": 7,
+  "practices": [
+   "Виньяса",
+   "Пилатес",
+   "Бег"
+  ],
+  "short": "бифлекс с сеткой · высокая посадка",
+  "desc": "Легинсы спортивные тайтсы черные с сеткой – это высококачественная одежда для активных тренировок и повседневного использования. Они выполнены из бифлекса, который обеспечивает комфорт и свободу движений, а также не оставляет следов на коже. Черный цвет делает эти тайтсы универсальными и легко сочетающимися с любой спортивной одеждой.",
+  "specs": [
+   [
+    "Материал",
+    "Бифлекс"
+   ],
+   [
+    "Состав",
+    "Бифлекс, сетка"
+   ],
+   [
+    "Размер",
+    "42"
+   ],
+   [
+    "Размер производителя",
+    "40-42"
+   ],
+   [
+    "Тип посадки",
+    "Высокая"
+   ],
+   [
+    "Сезон",
+    "На любой сезон"
+   ],
+   [
+    "Страна",
+    "Россия"
+   ],
+   [
+    "Гарантия",
+    "3 месяца"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": "42",
+    "price": 7026,
+    "old": 7500,
+    "sku": "Л-2024-С42",
+    "photos": [
+     "images/leggings-1-3.jpg",
+     "images/leggings-1-1.jpg",
+     "images/leggings-1-2.jpg",
+     "images/leggings-1-4.jpg"
+    ]
+   },
+   {
+    "ci": 0,
+    "size": "44",
+    "price": 3500,
+    "old": 8000,
+    "sku": "Л-2024-С44",
+    "photos": [
+     "images/leggings-1-3.jpg",
+     "images/leggings-1-1.jpg",
+     "images/leggings-1-2.jpg",
+     "images/leggings-1-4.jpg"
+    ]
+   },
+   {
+    "ci": 0,
+    "size": "46",
+    "price": 3500,
+    "old": 8000,
+    "sku": "Л-2024-С46",
+    "photos": [
+     "images/leggings-1-3.jpg",
+     "images/leggings-1-1.jpg",
+     "images/leggings-1-2.jpg",
+     "images/leggings-1-4.jpg"
+    ]
+   },
+   {
+    "ci": 0,
+    "size": "48",
+    "price": 3500,
+    "old": 8000,
+    "sku": "Л-2024-С48",
+    "photos": [
+     "images/leggings-1-3.jpg",
+     "images/leggings-1-1.jpg",
+     "images/leggings-1-2.jpg",
+     "images/leggings-1-4.jpg"
+    ]
+   },
+   {
+    "ci": 0,
+    "size": "50",
+    "price": 3500,
+    "old": 8000,
+    "sku": "Л-2024-С50",
+    "photos": [
+     "images/leggings-1-3.jpg",
+     "images/leggings-1-1.jpg",
+     "images/leggings-1-2.jpg",
+     "images/leggings-1-4.jpg"
+    ]
+   },
+   {
+    "ci": 0,
+    "size": "52",
+    "price": 3600,
+    "old": 7500,
+    "sku": "Л-2024-С52",
+    "photos": [
+     "images/leggings-1-3.jpg",
+     "images/leggings-1-1.jpg",
+     "images/leggings-1-2.jpg",
+     "images/leggings-1-4.jpg"
+    ]
+   }
+  ],
+  "sizes": [
+   "42",
+   "44",
+   "46",
+   "48",
+   "50",
+   "52"
+  ]
+ },
+ {
+  "id": "joggers",
+  "name": "Джоггеры женские",
+  "cat": "wear",
+  "draw": "leggings",
+  "pop": 13,
+  "practices": [
+   "Виньяса",
+   "Бег"
+  ],
+  "short": "хлопок с полиэстером · средняя посадка",
+  "desc": "Эти женские штаны джоггеры станут отличным выбором для активных девушек, которые ценят комфорт и стиль. Подходящий размер 40-42 гарантирует идеальную посадку на фигуре. Изготавливаются из легкого и дышащего материала, эти брюки спортивные идеально подходят как для занятий спортом, так и для повседневной носки.",
+  "specs": [
+   [
+    "Материал",
+    "Полиэстер"
+   ],
+   [
+    "Состав",
+    "Хлопок, полиэстер"
+   ],
+   [
+    "Размер",
+    "42"
+   ],
+   [
+    "Размер производителя",
+    "S"
+   ],
+   [
+    "Тип посадки",
+    "Средняя"
+   ],
+   [
+    "Сезон",
+    "Демисезон"
+   ],
+   [
+    "Страна",
+    "Россия"
+   ],
+   [
+    "Вес",
+    "600 г"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": "42",
+    "price": 2500,
+    "old": 7000,
+    "sku": "ДЖ-2022-40/42Ч",
+    "photos": [
+     "images/joggers-1-2.jpg",
+     "images/joggers-1-1.jpg",
+     "images/joggers-1-3.jpg",
+     "images/joggers-1-4.jpg"
+    ]
+   }
+  ],
+  "drawOpt": {
+   "loose": true
+  }
+ },
+ {
+  "id": "joggers-warm",
+  "name": "Джоггеры женские утеплённые",
+  "cat": "wear",
+  "draw": "leggings",
+  "pop": 14,
+  "practices": [
+   "Бег"
+  ],
+  "short": "на флисе · демисезон",
+  "desc": "Утепленные джоггеры для женщин – идеальный выбор для тех, кто ценит комфорт и стиль в повседневной жизни. Эти брюки на флисе обеспечивают теплоту и уют в холодную погоду, что делает их отличным вариантом для активного отдыха, прогулок и занятий спортом на свежем воздухе. Стильный дизайн джоггеров прекрасно сочетается как с спортивной, так и с повседневной верхней одеждой.",
+  "specs": [
+   [
+    "Материал",
+    "Полиэстер"
+   ],
+   [
+    "Состав",
+    "Хлопок, полиэстер"
+   ],
+   [
+    "Размер",
+    "44"
+   ],
+   [
+    "Размер производителя",
+    "M"
+   ],
+   [
+    "Тип посадки",
+    "Средняя"
+   ],
+   [
+    "Сезон",
+    "Демисезон"
+   ],
+   [
+    "Страна",
+    "Россия"
+   ],
+   [
+    "Вес",
+    "600 г"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": "44",
+    "price": 2500,
+    "old": 7000,
+    "sku": "ДЖ-2022-42/44Ч",
+    "photos": [
+     "images/joggers-warm-1-3.jpg",
+     "images/joggers-warm-1-1.jpg",
+     "images/joggers-warm-1-2.jpg",
+     "images/joggers-warm-1-4.jpg"
+    ]
+   }
+  ],
+  "drawOpt": {
+   "loose": true
+  }
+ },
+ {
+  "id": "tshirt",
+  "name": "Футболка Yoga Dog",
+  "cat": "wear",
+  "draw": "tshirt",
+  "pop": 10,
+  "practices": [
+   "Хатха",
+   "Виньяса"
+  ],
+  "short": "хлопок · принт Yoga Dog",
+  "desc": "Отличная футболка с принтом Yoga Dog. Подойдет как для повседневной носки, так и для занятий спортом. Размер S (плечи 40 см, бюст 94, длина 64 см)",
+  "specs": [
+   [
+    "Материал",
+    "Хлопок"
+   ],
+   [
+    "Состав",
+    "хлопок"
+   ],
+   [
+    "Размер",
+    "42"
+   ],
+   [
+    "Сезон",
+    "На любой сезон"
+   ],
+   [
+    "Страна",
+    "Китай"
+   ],
+   [
+    "Вес",
+    "150 г"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Серый",
+    "hex": "#8C938E"
+   },
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": "42",
+    "price": 2000,
+    "old": 5000,
+    "sku": "DY-2020-GS",
+    "photos": [
+     "images/tshirt-1-1.jpg"
+    ]
+   },
+   {
+    "ci": 1,
+    "size": "42",
+    "price": 2000,
+    "old": 6000,
+    "sku": "YD-2020-BS",
+    "photos": [
+     "images/tshirt-2-1.jpg"
+    ]
+   },
+   {
+    "ci": 1,
+    "size": "44",
+    "price": 1550,
+    "old": 2100,
+    "sku": "YD-2020-BM",
+    "photos": [
+     "images/tshirt-2-1.jpg"
+    ]
+   }
+  ],
+  "sizes": [
+   "42",
+   "44"
+  ]
+ },
+ {
+  "id": "hoodie",
+  "name": "Толстовка Yoga Dog на флисе",
+  "cat": "wear",
+  "draw": "tshirt",
+  "drawOpt": {
+   "hood": true
+  },
+  "pop": 17,
+  "practices": [
+   "Хатха"
+  ],
+  "short": "хлопок на флисе · принт",
+  "desc": "Качественная толстовка с принтов Do Yoga утепленная на флисе. Размер соответствует.",
+  "specs": [
+   [
+    "Материал",
+    "Хлопок"
+   ],
+   [
+    "Состав",
+    "хлопок"
+   ],
+   [
+    "Размер",
+    "42"
+   ],
+   [
+    "Размер производителя",
+    "42 (S)"
+   ],
+   [
+    "Сезон",
+    "На любой сезон"
+   ],
+   [
+    "Вес",
+    "500 г"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Серый",
+    "hex": "#8C938E"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": "42",
+    "price": 3000,
+    "old": 3500,
+    "sku": "TYD-2023-S",
+    "photos": [
+     "images/hoodie-1-1.jpg"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "socks-ballet",
+  "name": "Балетки-носки противоскользящие",
+  "cat": "socks",
+  "draw": "socks",
+  "pop": 9,
+  "practices": [
+   "Хатха",
+   "Пилатес",
+   "Танцы"
+  ],
+  "short": "36–39 · хлопок с эластаном",
+  "desc": "Балетки противоскользящие. Размер универсальный 36-39 Состав: хлопок 80% , Эластан 20%",
+  "specs": [
+   [
+    "Материал",
+    "Хлопок"
+   ],
+   [
+    "Состав",
+    "Хлопок, Эластан"
+   ],
+   [
+    "Размер",
+    "универсальный"
+   ],
+   [
+    "Сезон",
+    "На любой сезон"
+   ],
+   [
+    "Страна",
+    "Китай"
+   ],
+   [
+    "Вес",
+    "120 г"
+   ],
+   [
+    "Назначение",
+    "Йога и пилатес"
+   ],
+   [
+    "В упаковке",
+    "1 пара"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   },
+   {
+    "name": "Серый",
+    "hex": "#8C938E"
+   },
+   {
+    "name": "Тёмно-синий",
+    "hex": "#33405C"
+   },
+   {
+    "name": "Светло-розовый",
+    "hex": "#EBBAC5"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 750,
+    "old": 1500,
+    "sku": "Б2-2022-Ч",
+    "photos": [
+     "images/socks-ballet-1-2.jpg",
+     "images/socks-ballet-1-1.jpg",
+     "images/socks-ballet-1-3.jpg"
+    ]
+   },
+   {
+    "ci": 1,
+    "size": null,
+    "price": 750,
+    "old": 1500,
+    "sku": "Б2-2022-СЕР",
+    "photos": [
+     "images/socks-ballet-2-3.jpg",
+     "images/socks-ballet-2-1.jpg",
+     "images/socks-ballet-2-2.jpg"
+    ]
+   },
+   {
+    "ci": 2,
+    "size": null,
+    "price": 720,
+    "old": 1200,
+    "sku": "Б2-2022-СИН",
+    "photos": [
+     "images/socks-ballet-3-2.jpg",
+     "images/socks-ballet-3-1.jpg",
+     "images/socks-ballet-3-3.jpg"
+    ]
+   },
+   {
+    "ci": 3,
+    "size": null,
+    "price": 700,
+    "old": 1200,
+    "sku": "Б2-2022-Р",
+    "photos": [
+     "images/socks-ballet-4-2.jpg",
+     "images/socks-ballet-4-1.jpg",
+     "images/socks-ballet-4-3.jpg"
+    ]
+   }
+  ],
+  "drawOpt": {
+   "ballet": true
+  }
+ },
+ {
+  "id": "socks-nonslip",
+  "name": "Носки для йоги противоскользящие",
+  "cat": "socks",
+  "draw": "socks",
+  "pop": 12,
+  "practices": [
+   "Хатха",
+   "Пилатес",
+   "Инь"
+  ],
+  "short": "39 · прорезиненная подошва",
+  "desc": "Носки балетки для йоги противоскользящие Your Yoga - это незаменимый аксессуар для любителей йоги и пилатеса. Они обеспечивают комфорт и безопасность во время занятий, предотвращая скольжение стоп на полу. Носки изготовлены из высококачественных материалов - хлопка и эластана, что обеспечивает их долговечность и комфорт при носке.",
+  "specs": [
+   [
+    "Материал",
+    "Эластан"
+   ],
+   [
+    "Состав",
+    "хлопок, Эластан"
+   ],
+   [
+    "Размер",
+    "39"
+   ],
+   [
+    "Размер производителя",
+    "36-39"
+   ],
+   [
+    "Сезон",
+    "На любой сезон"
+   ],
+   [
+    "Страна",
+    "Россия"
+   ],
+   [
+    "Гарантия",
+    "3 месяца"
+   ],
+   [
+    "Вес",
+    "150 г"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   },
+   {
+    "name": "Пудра",
+    "hex": "#EBBAC5"
+   },
+   {
+    "name": "Сиреневый",
+    "hex": "#A995C9"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 820,
+    "old": 1600,
+    "sku": "НН-2021-Ч",
+    "photos": [
+     "images/socks-nonslip-1-1.jpg"
+    ]
+   },
+   {
+    "ci": 1,
+    "size": null,
+    "price": 950,
+    "old": 1500,
+    "sku": "НН-2021-ПУ",
+    "photos": [
+     "images/socks-nonslip-2-4.jpg",
+     "images/socks-nonslip-2-1.jpg",
+     "images/socks-nonslip-2-2.jpg",
+     "images/socks-nonslip-2-3.jpg"
+    ]
+   },
+   {
+    "ci": 2,
+    "size": null,
+    "price": 950,
+    "old": 2000,
+    "sku": "НН-2021-СИ",
+    "photos": [
+     "images/socks-nonslip-3-1.jpg",
+     "images/socks-nonslip-3-2.jpg"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "socks-toe-open",
+  "name": "Носки с открытыми пальчиками",
+  "cat": "socks",
+  "draw": "socks",
+  "pop": 15,
+  "practices": [
+   "Пилатес",
+   "Танцы",
+   "Хатха"
+  ],
+  "short": "36–39 · с пальчиками",
+  "desc": "Носки противоскользящие. Идеальны для йоги, пилатеса, танцев. С выделенными пальчиками. Размер универсальный 36-39 RU",
+  "specs": [
+   [
+    "Материал",
+    "Хлопок"
+   ],
+   [
+    "Состав",
+    "Хлопок, Эластан"
+   ],
+   [
+    "Размер",
+    "универсальный"
+   ],
+   [
+    "Сезон",
+    "На любой сезон"
+   ],
+   [
+    "Страна",
+    "Китай"
+   ],
+   [
+    "Вес",
+    "100 г"
+   ],
+   [
+    "Назначение",
+    "Йога и пилатес"
+   ],
+   [
+    "В упаковке",
+    "1 пара"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   },
+   {
+    "name": "Бежевый",
+    "hex": "#DCC9AC"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 1000,
+    "old": 2000,
+    "sku": "НО-2023-Ч",
+    "photos": [
+     "images/socks-toe-open-1-1.jpg"
+    ]
+   },
+   {
+    "ci": 1,
+    "size": null,
+    "price": 1000,
+    "old": 2000,
+    "sku": "НО-2022-Б",
+    "photos": [
+     "images/socks-toe-open-2-3.jpg",
+     "images/socks-toe-open-2-1.jpg",
+     "images/socks-toe-open-2-2.jpg",
+     "images/socks-toe-open-2-4.jpg"
+    ]
+   }
+  ],
+  "drawOpt": {
+   "toes": true
+  }
+ },
+ {
+  "id": "socks-toe-closed",
+  "name": "Носки с закрытыми пальчиками",
+  "cat": "socks",
+  "draw": "socks",
+  "pop": 19,
+  "practices": [
+   "Хатха",
+   "Пилатес"
+  ],
+  "short": "39 · закрытые пальчики",
+  "desc": "Прорезиненая подошва с надписью Health yoga Состав: хлопок 80%, эластан 20%.",
+  "specs": [
+   [
+    "Материал",
+    "Эластан"
+   ],
+   [
+    "Размер",
+    "39"
+   ],
+   [
+    "Сезон",
+    "На любой сезон"
+   ],
+   [
+    "Страна",
+    "Китай"
+   ],
+   [
+    "Вес",
+    "120 г"
+   ],
+   [
+    "Назначение",
+    "Йога и пилатес"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Фиолетовый",
+    "hex": "#7A5BA6"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 1000,
+    "old": 2000,
+    "sku": "НЗ-Ф-14",
+    "photos": [
+     "images/socks-toe-closed-1-1.jpg"
+    ]
+   }
+  ],
+  "drawOpt": {
+   "toes": true
+  }
+ },
+ {
+  "id": "socks-mesh",
+  "name": "Носки для йоги и танцев, сетка",
+  "cat": "socks",
+  "draw": "socks",
+  "pop": 18,
+  "practices": [
+   "Танцы",
+   "Пилатес"
+  ],
+  "short": "34–38 · сетка",
+  "desc": "Носки для йоги и танцев – идеальный аксессуар для тех, кто занимается спортом и хочет добиться максимального комфорта и безопасности. Эти черные спортивные носки созданы специально для тренировок по йоге и танцам, обеспечивая прочное сцепление с поверхностью благодаря их противоскользящему эффекту.",
+  "specs": [
+   [
+    "Материал",
+    "Эластан"
+   ],
+   [
+    "Состав",
+    "Хлопок, эластан"
+   ],
+   [
+    "Размер",
+    "универсальный"
+   ],
+   [
+    "Размер производителя",
+    "34-38"
+   ],
+   [
+    "Сезон",
+    "На любой сезон"
+   ],
+   [
+    "Вес",
+    "100 г"
+   ],
+   [
+    "Назначение",
+    "Йога и пилатес"
+   ],
+   [
+    "В упаковке",
+    "1 пара"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   },
+   {
+    "name": "Розовый",
+    "hex": "#EBBAC5"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 900,
+    "old": 1500,
+    "sku": "НС-2024-Ч",
+    "photos": [
+     "images/socks-mesh-1-1.jpg"
+    ]
+   },
+   {
+    "ci": 1,
+    "size": null,
+    "price": 700,
+    "old": 1500,
+    "sku": "НС-2024-Р",
+    "photos": [
+     "images/socks-mesh-2-1.jpg"
+    ]
+   }
+  ],
+  "drawOpt": {
+   "mesh": true
+  }
+ },
+ {
+  "id": "socks-short",
+  "name": "Носки короткие для йоги",
+  "cat": "socks",
+  "draw": "socks",
+  "pop": 20,
+  "practices": [
+   "Хатха",
+   "Пилатес"
+  ],
+  "short": "37 · короткие",
+  "desc": "Прорезиненная подошва Состав: хлопок. Разер универсальный",
+  "specs": [
+   [
+    "Материал",
+    "Хлопок"
+   ],
+   [
+    "Состав",
+    "хлопок"
+   ],
+   [
+    "Размер",
+    "37"
+   ],
+   [
+    "Сезон",
+    "На любой сезон"
+   ],
+   [
+    "Страна",
+    "Китай"
+   ],
+   [
+    "Вес",
+    "55 г"
+   ],
+   [
+    "Назначение",
+    "Йога и пилатес"
+   ],
+   [
+    "В упаковке",
+    "1 пара"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Чёрный",
+    "hex": "#2B302E"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 800,
+    "old": 2000,
+    "sku": "НК-Ч-12",
+    "photos": [
+     "images/socks-short-1-1.jpg"
+    ]
+   }
+  ],
+  "drawOpt": {
+   "short": true
+  }
+ },
+ {
+  "id": "strap",
+  "name": "Ремень для йоги, хлопок 183 см",
+  "cat": "props",
+  "draw": "strap",
+  "pop": 21,
+  "practices": [
+   "Хатха",
+   "Инь"
+  ],
+  "short": "183 см · хлопок",
+  "desc": "Ремень из хлопка для занятий йогой.",
+  "specs": [
+   [
+    "Длина",
+    "183 см"
+   ],
+   [
+    "Гарантия",
+    "6 месяцев"
+   ],
+   [
+    "Вес",
+    "100 г"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Фиолетовый",
+    "hex": "#7A5BA6"
+   },
+   {
+    "name": "Тёмно-синий",
+    "hex": "#33405C"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 700,
+    "old": 1500,
+    "sku": "РСФ-2020-7СФ",
+    "photos": [
+     "images/strap-1-2.jpg",
+     "images/strap-1-1.jpg"
+    ]
+   },
+   {
+    "ci": 1,
+    "size": null,
+    "price": 720,
+    "old": 1500,
+    "sku": "РТФ-2020-8СИН",
+    "photos": [
+     "images/strap-2-1.jpg"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "roller",
+  "name": "Ролик массажный МФР 45 × 14 см",
+  "cat": "props",
+  "draw": "roller",
+  "pop": 22,
+  "practices": [
+   "Восстановление",
+   "Бег"
+  ],
+  "short": "45 × 14 см · средняя жёсткость",
+  "desc": "Миофасциальный релиз (МФР) — это техника самомассажа для избавления от стянутости в мышцах и для повышения эластичности фасций. МФР нужен для ускорения процессов восстановления после тренировок, а так же для расширения амплитуды движений конечностей. Роллы со средней жесткостью подходят практически для всех, не зависимо от уровня физической подготовки.",
+  "specs": [
+   [
+    "Длина",
+    "45 см"
+   ],
+   [
+    "Страна",
+    "Китай"
+   ],
+   [
+    "Гарантия",
+    "3 месяцев"
+   ],
+   [
+    "Вес",
+    "800 г"
+   ]
+  ],
+  "colors": [
+   {
+    "name": "Персиковый",
+    "hex": "#E8A487"
+   }
+  ],
+  "variants": [
+   {
+    "ci": 0,
+    "size": null,
+    "price": 1800,
+    "old": 2500,
+    "sku": "РМ-2021-ПБ",
+    "photos": [
+     "images/roller-1-1.jpg"
+    ]
+   }
+  ]
+ }
+];const byId = Object.fromEntries(PRODUCTS.map(p => [p.id, p]));
+/* варианты: у каждого товара свои цвет, размер, цена и фотографии */
+function variantOf(p, ci = 0, size = null) {
+  return p.variants.find(v => v.ci === ci && (!size || v.size === size))
+      || p.variants.find(v => v.ci === ci) || p.variants[0];
+}
+function priceInfo(p) {
+  const ps = p.variants.map(v => v.price), min = Math.min(...ps);
+  const v = p.variants.find(x => x.price === min);
+  return { min, old: v.old, multi: Math.max(...ps) !== min };
+}
+function photoOf(p, ci = 0, n = 0) {
+  const v = p.variants.find(x => x.ci === ci && x.photos.length) || p.variants.find(x => x.photos.length);
+  return v && v.photos[n] ? v.photos[n] : null;
+}
+function photosOf(p, ci = 0) {
+  const v = p.variants.find(x => x.ci === ci && x.photos.length);
+  return v ? v.photos : [];
+}
 const DELIVERY = {
   courier: { name: "Курьером", note: "Москва и Санкт-Петербург, 1–2 дня", price: 390 },
   pvz: { name: "Пункт выдачи СДЭК", note: "по России, 2–5 дней", price: 290 },
@@ -844,7 +2674,7 @@ const PROMOS = { "ДЫШИ": 0.10 };
 
 /* ---------- state ---------- */
 const S = {
-  cat: "all", practice: null, thick: null, q: "", sort: "pop", max: 9000, sale: false, onlyFav: false,
+  cat: "all", practice: null, q: "", sort: "pop", max: 9000, sale: false, onlyFav: false,
   fav: new Set(store.get("fav", [])),
   cart: store.get("cart", []).filter(l => byId[l.id]),
   promo: store.get("promo", null)
@@ -855,19 +2685,21 @@ const saveCart = () => { store.set("cart", S.cart); store.set("promo", S.promo);
 function matches(p, ignore = {}) {
   if (!ignore.cat && S.cat !== "all" && p.cat !== S.cat) return false;
   if (!ignore.practice && S.practice && !p.practices.includes(S.practice)) return false;
-  if (S.thick != null && p.thick !== S.thick) return false;
-  if (p.price > S.max) return false;
-  if (S.sale && !p.old) return false;
+  const pi = priceInfo(p);
+  if (pi.min > S.max) return false;
+  if (S.sale && !pi.old) return false;
   if (S.onlyFav && !S.fav.has(p.id)) return false;
   if (S.q) {
-    const hay = (p.name + " " + p.short + " " + p.specs.map(s => s[1]).join(" ") + " " + p.practices.join(" ")).toLowerCase();
+    const hay = (p.name + " " + p.short + " " + p.specs.map(s => s[1]).join(" ") + " " + p.practices.join(" ")
+      + " " + p.colors.map(c => c.name).join(" ")).toLowerCase();
     if (!S.q.toLowerCase().split(/\s+/).every(w => hay.includes(w))) return false;
   }
   return true;
 }
 function list() {
   const arr = PRODUCTS.filter(p => matches(p));
-  const sorters = { pop: (a, b) => a.pop - b.pop, cheap: (a, b) => a.price - b.price, exp: (a, b) => b.price - a.price, new: (a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0) || a.pop - b.pop };
+  const mp = p => priceInfo(p).min;
+  const sorters = { pop: (a, b) => a.pop - b.pop, cheap: (a, b) => mp(a) - mp(b), exp: (a, b) => mp(b) - mp(a), new: (a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0) || a.pop - b.pop };
   return arr.sort(sorters[S.sort]);
 }
 
@@ -894,15 +2726,17 @@ function renderCats() {
     return `<li><button type="button" data-cat="${c.id}" aria-current="${S.cat === c.id}"><span>${esc(c.name)}</span><small>${n}</small></button></li>`;
   }).join("");
 }
-function renderScale() {
-  $("#scale").innerHTML = THICK.map(t => {
-    const n = PRODUCTS.filter(p => p.thick === t.mm).length;
-    return `<button type="button" class="mm" data-mm="${t.mm}" aria-pressed="${S.thick === t.mm}">
-      <span class="slab"><i style="height:${t.mm * 5.5}px"></i></span>
-      <span class="v">${String(t.mm).replace(".", ",")}<small>мм</small></span>
-      <span class="t">${t.t}</span>
-      <span class="d">${t.d}</span>
-      <span class="n">${n} ${plural(n, "коврик", "коврика", "ковриков")} →</span>
+function renderMats() {
+  const mats = PRODUCTS.filter(p => p.cat === "mats").sort((a, b) => a.pop - b.pop);
+  $("#scale").innerHTML = mats.map(p => {
+    const pi = priceInfo(p), c = p.colors[0];
+    const spec = Object.fromEntries(p.specs);
+    return `<button type="button" class="mm" data-open="${p.id}">
+      <span class="matpic" style="--p:${c.hex}">${art(p)}</span>
+      <span class="t">${esc(p.name.replace("Коврик для йоги ", "").replace("Тревел-коврик ", ""))}</span>
+      <span class="d">${esc(p.short)}</span>
+      <span class="d">${esc([spec["Длина"] && spec["Ширина"] ? spec["Длина"] + " × " + spec["Ширина"] : "", spec["Вес"] ? spec["Вес"] : ""].filter(Boolean).join(" · "))}</span>
+      <span class="v num">${fmt(pi.min)}</span>
     </button>`;
   }).join("");
 }
@@ -910,7 +2744,8 @@ function renderScale() {
 /* ---------- render: grid ---------- */
 function cardHTML(p) {
   const inFav = S.fav.has(p.id);
-  const off = p.old ? Math.round((1 - p.price / p.old) * 100) : 0;
+  const pi = priceInfo(p);
+  const off = pi.old ? Math.round((1 - pi.min / pi.old) * 100) : 0;
   const badges = [off ? `<span class="badge sale">−${off}%</span>` : "", p.badge ? `<span class="badge">${p.badge}</span>` : ""].join("");
   return `<article class="card">
     <div style="position:relative">
@@ -926,7 +2761,7 @@ function cardHTML(p) {
       ${p.colors.length > 1 ? `<span class="dots" aria-label="${p.colors.length} ${plural(p.colors.length, "цвет", "цвета", "цветов")}">${p.colors.map(c => `<i style="background:${c.hex}" title="${c.name}"></i>`).join("")}</span>` : ""}
     </div>
     <div class="buy">
-      <span class="price num"><b>${fmt(p.price)}</b>${p.old ? `<s>${fmt(p.old)}</s>` : ""}</span>
+      <span class="price num"><b>${pi.multi ? "от " : ""}${fmt(pi.min)}</b>${pi.old ? `<s>${fmt(pi.old)}</s>` : ""}</span>
       <button type="button" class="add" data-add="${p.id}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>В корзину
       </button>
@@ -944,7 +2779,6 @@ function renderGrid() {
 function renderActive() {
   const t = [];
   if (S.practice) t.push(["practice", `Практика: ${S.practice}`]);
-  if (S.thick != null) t.push(["thick", `Толщина ${String(S.thick).replace(".", ",")} мм`]);
   if (S.q) t.push(["q", `«${S.q}»`]);
   if (S.max < 9000) t.push(["max", `до ${fmt(S.max)}`]);
   if (S.sale) t.push(["sale", "Со скидкой"]);
@@ -958,14 +2792,15 @@ function syncControls() {
   $("#fav-btn").setAttribute("aria-pressed", String(S.onlyFav));
   const fc = $("#fav-count"); fc.textContent = S.fav.size; fc.dataset.n = S.fav.size;
 }
-function update() { renderPractices(); renderCats(); renderScale(); renderActive(); renderGrid(); syncControls(); }
-function reset() { Object.assign(S, { cat: "all", practice: null, thick: null, q: "", max: 9000, sale: false, onlyFav: false }); update(); }
+function update() { renderPractices(); renderCats(); renderMats(); renderActive(); renderGrid(); syncControls(); }
+function reset() { Object.assign(S, { cat: "all", practice: null, q: "", max: 9000, sale: false, onlyFav: false }); update(); }
 
 /* ---------- cart ---------- */
 const lineKey = (id, ci, size) => `${id}|${ci}|${size || ""}`;
+function lineVariant(l) { return variantOf(byId[l.id], l.ci, l.size); }
 function addToCart(id, ci = 0, size = null, qty = 1) {
   const p = byId[id];
-  if (p.sizes && !size) size = "M";
+  if (p.sizes && !size) size = (p.variants.find(v => v.ci === ci) || p.variants[0]).size;
   const key = lineKey(id, ci, size);
   const ex = S.cart.find(l => l.key === key);
   if (ex) ex.qty = Math.min(ex.qty + qty, 20); else S.cart.push({ key, id, ci, size, qty });
@@ -974,7 +2809,7 @@ function addToCart(id, ci = 0, size = null, qty = 1) {
   toast(`${p.name} — в корзине`);
 }
 function totals() {
-  const items = S.cart.reduce((s, l) => s + byId[l.id].price * l.qty, 0);
+  const items = S.cart.reduce((s, l) => s + lineVariant(l).price * l.qty, 0);
   const rate = S.promo && PROMOS[S.promo] ? PROMOS[S.promo] : 0;
   const disc = Math.round(items * rate);
   const count = S.cart.reduce((s, l) => s + l.qty, 0);
@@ -982,9 +2817,9 @@ function totals() {
 }
 function renderCartCount() { const n = totals().count, el = $("#cart-count"); el.textContent = n; el.dataset.n = n; }
 function lineHTML(l, mini) {
-  const p = byId[l.id], col = p.colors[l.ci];
+  const p = byId[l.id], col = p.colors[l.ci], sum = lineVariant(l).price * l.qty;
   const vr = [p.colors.length > 1 ? col.name : null, l.size].filter(Boolean).join(" · ");
-  if (mini) return `<li><div class="tile" style="--p:${col.hex}">${art(p, l.ci)}</div><div><div>${esc(p.name)}</div><div class="vr">${esc(vr || p.short)} · ${l.qty} шт.</div></div><b class="num">${fmt(p.price * l.qty)}</b></li>`;
+  if (mini) return `<li><div class="tile" style="--p:${col.hex}">${art(p, l.ci)}</div><div><div>${esc(p.name)}</div><div class="vr">${esc(vr || p.short)} · ${l.qty} шт.</div></div><b class="num">${fmt(sum)}</b></li>`;
   return `<li class="line">
     <div class="tile" style="--p:${col.hex}">${art(p, l.ci)}</div>
     <div>
@@ -995,7 +2830,7 @@ function lineHTML(l, mini) {
         <button type="button" class="rm" data-rm="${l.key}">Удалить</button>
       </div>
     </div>
-    <div class="sum num">${fmt(p.price * l.qty)}</div>
+    <div class="sum num">${fmt(sum)}</div>
   </li>`;
 }
 function renderCart() {
@@ -1063,36 +2898,44 @@ $$("dialog").forEach(d => {
 
 function openProduct(id) {
   const p = byId[id], d = $("#product-dlg");
-  let ci = 0, size = p.sizes ? "M" : null, qty = 1;
-  const off = p.old ? Math.round((1 - p.price / p.old) * 100) : 0;
+  let ci = 0, size = p.sizes ? (p.variants.find(v => v.ci === 0) || p.variants[0]).size : null, qty = 1, ph = 0;
+  const sizeAvailable = s => p.variants.some(v => v.ci === ci && v.size === s);
   const draw = () => {
     const col = p.colors[ci];
+    if (p.sizes && !sizeAvailable(size)) size = (p.variants.find(v => v.ci === ci) || p.variants[0]).size;
+    const v = variantOf(p, ci, size);
+    const off = v.old ? Math.round((1 - v.price / v.old) * 100) : 0;
+    const gal = photosOf(p, ci);
+    if (ph >= Math.max(1, gal.length)) ph = 0;
     d.innerHTML = `<button type="button" class="icon-btn x" data-close aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     <div class="pd">
-      <div class="tile" style="--p:${col.hex}">${art(p, ci)}</div>
+      <div class="gallery">
+        <div class="tile" style="--p:${col.hex}">${art(p, ci, ph)}</div>
+        ${gal.length > 1 ? `<div class="thumbs">${gal.map((f, i) => `<button type="button" class="thumb" data-ph="${i}" aria-pressed="${i === ph}" aria-label="Фото ${i + 1}"><img src="${esc(f)}" alt="" loading="lazy" onerror="this.closest('.thumb').remove()"></button>`).join("")}</div>` : ""}
+      </div>
       <div class="info">
         <div><p class="eyebrow">${esc(CATS.find(c => c.id === p.cat).name)}</p>
         <h2 id="pd-name" style="margin-top:8px">${esc(p.name)}</h2></div>
-        <div class="price num"><b>${fmt(p.price)}</b>${p.old ? `<s>${fmt(p.old)}</s><span class="badge sale">−${off}%</span>` : ""}</div>
+        <div class="price num"><b>${fmt(v.price)}</b>${v.old ? `<s>${fmt(v.old)}</s><span class="badge sale">−${off}%</span>` : ""}</div>
         ${p.colors.length > 1 ? `<div><p class="opt-label">Цвет: <b>${esc(col.name)}</b></p><div class="swatches">${p.colors.map((c, i) => `<button type="button" class="sw" style="background:${c.hex}" data-ci="${i}" aria-pressed="${i === ci}" aria-label="${esc(c.name)}"></button>`).join("")}</div></div>` : ""}
-        ${p.sizes ? `<div><p class="opt-label">Размер: <b>${size}</b></p><div class="sizes">${p.sizes.map(s => `<button type="button" class="sz" data-size="${s}" aria-pressed="${s === size}">${s}</button>`).join("")}</div></div>` : ""}
+        ${p.sizes ? `<div><p class="opt-label">Размер: <b>${size}</b></p><div class="sizes">${p.sizes.map(s => `<button type="button" class="sz" data-size="${s}" aria-pressed="${s === size}" ${sizeAvailable(s) ? "" : "disabled title=\"Нет в наличии\""}>${s}</button>`).join("")}</div></div>` : ""}
         <div class="add-row">
           <span class="stepper"><button type="button" data-q="-1" aria-label="Меньше">−</button><span class="num">${qty}</span><button type="button" data-q="1" aria-label="Больше">+</button></span>
           <button type="button" class="btn btn-primary" data-pd-add>Добавить в корзину</button>
         </div>
-        <p class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg>${p.stock ? `Осталось ${p.stock} шт. · ` : "В наличии · "}по Москве завтра, по России от 2 дней</p>
+        <p class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg>В наличии · по Москве завтра, по России от 2 дней</p>
         <p class="desc">${esc(p.desc)}</p>
         <div><p class="opt-label">Подходит для практик</p><div class="for">${p.practices.map(x => `<span>${esc(x)}</span>`).join("")}</div></div>
-        <dl class="specs">${p.specs.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
+        <dl class="specs">${p.specs.map(([k, val]) => `<dt>${esc(k)}</dt><dd>${esc(val)}</dd>`).join("")}<dt>Артикул</dt><dd>${esc(v.sku)}</dd></dl>
       </div>
     </div>`;
   };
   d.onclick = null;
-  d.oninput = null;
   draw();
   d.onclick = e => {
-    const sw = e.target.closest("[data-ci]"); if (sw) { ci = +sw.dataset.ci; draw(); d.querySelector(`[data-ci="${ci}"]`).focus(); return; }
-    const sz = e.target.closest("[data-size]"); if (sz) { size = sz.dataset.size; draw(); d.querySelector(`[data-size="${size}"]`).focus(); return; }
+    const sw = e.target.closest("[data-ci]"); if (sw) { ci = +sw.dataset.ci; ph = 0; draw(); d.querySelector(`[data-ci="${ci}"]`).focus(); return; }
+    const sz = e.target.closest("[data-size]"); if (sz && !sz.disabled) { size = sz.dataset.size; draw(); d.querySelector(`[data-size="${size}"]`).focus(); return; }
+    const th = e.target.closest("[data-ph]"); if (th) { ph = +th.dataset.ph; draw(); d.querySelector(`[data-ph="${ph}"]`).focus(); return; }
     const q = e.target.closest("[data-q]"); if (q) { qty = Math.max(1, Math.min(20, qty + +q.dataset.q)); d.querySelector(".add-row .stepper .num").textContent = qty; return; }
     if (e.target.closest("[data-pd-add]")) { addToCart(p.id, ci, size, qty); d.close(); }
   };
@@ -1238,9 +3081,7 @@ document.addEventListener("click", e => {
     if (S.onlyFav) update(); else { const on = S.fav.has(id); fav.setAttribute("aria-pressed", on); fav.setAttribute("aria-label", on ? "Убрать из избранного" : "В избранное"); syncControls(); }
     return;
   }
-  const cat = t.closest("[data-cat]"); if (cat) { S.cat = cat.dataset.cat; if (cat.closest("nav")) { S.thick = null; } update(); return; }
-  const mm = t.closest("[data-mm]");
-  if (mm) { const v = +mm.dataset.mm; if (S.thick === v) { S.thick = null; } else { S.thick = v; S.cat = "mats"; S.practice = null; } update(); document.getElementById("catalog").scrollIntoView(); return; }
+  const cat = t.closest("[data-cat]"); if (cat) { S.cat = cat.dataset.cat; update(); return; }
   const clr = t.closest("[data-clear]");
   if (clr) { const k = clr.dataset.clear; S[k] = k === "max" ? 9000 : (k === "q" ? "" : (k === "sale" || k === "onlyFav") ? false : null); update(); return; }
   if (t.closest("[data-reset]")) return reset();
@@ -1262,5 +3103,4 @@ $("#hero-art").innerHTML = DRAW.mat("#5F7F66") + `<g transform="translate(116 68
 update(); renderCartCount();
 })();
 </script>
-</body>
-</html>
+</body></html>
