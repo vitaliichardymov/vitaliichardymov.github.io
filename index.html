@@ -420,7 +420,7 @@ dialog::backdrop{background:rgba(14,22,18,.45);backdrop-filter:blur(3px)}
             <h3>Цена</h3>
             <div class="range">
               <label class="visually-hidden" for="price">Цена до</label>
-              <input type="range" id="price" min="700" max="9000" step="100" value="9000">
+              <input type="range" id="price" min="700" max="9000" step="100" value="9000" data-max="9000">
               <div class="vals mono num"><span id="price-min">от 700 ₽</span><span id="price-val">до 9 000 ₽</span></div>
             </div>
           </div>
@@ -2673,8 +2673,18 @@ function photoOf(p, ci = 0, n = 0) {
   const v = p.variants.find(x => x.ci === ci && x.photos.length) || p.variants.find(x => x.photos.length);
   return v && v.photos[n] ? v.photos[n] : null;
 }
-let STOCK = null;                       // {Артикул: остаток} — приходит из таблицы
-const vInStock = v => !STOCK || STOCK[v.sku] === undefined || STOCK[v.sku] > 0;
+let STOCK = null;   // {Артикул: {q: остаток, p: цена, o: зачёркнутая}} — из Google Таблицы
+const vInStock = v => !STOCK || STOCK[v.sku] === undefined || STOCK[v.sku].q > 0;
+/* Цены из таблицы важнее цен в этом файле: 0 или пусто в таблице — берём из файла. */
+function applyPrices() {
+  if (!STOCK) return;
+  PRODUCTS.forEach(p => p.variants.forEach(v => {
+    const row = STOCK[v.sku];
+    if (!row) return;
+    if (row.p > 0) v.price = row.p;
+    if (row.o !== undefined) v.old = row.o > v.price ? row.o : 0;
+  }));
+}
 const pInStock = p => p.variants.some(vInStock);
 const firstInStockCi = p => { const v = p.variants.find(vInStock) || p.variants[0]; return v.ci; };
 async function loadStock() {
@@ -2682,7 +2692,15 @@ async function loadStock() {
   try {
     const r = await fetch(SHOP_API, { method: "GET" });
     const d = await r.json();
-    if (d && d.stock) { STOCK = d.stock; dropSoldOutFromCart(); update(); if ($("#cart-dlg").open) renderCart(); }
+    if (d && d.stock) {
+      STOCK = d.stock; applyPrices(); dropSoldOutFromCart(); update();
+      renderCartCount(); if ($("#cart-dlg").open) renderCart();
+      const max = Math.max(...PRODUCTS.flatMap(p => p.variants.map(v => v.price)));
+      const slider = $("#price");
+      slider.max = Math.ceil(max / 100) * 100;
+      if (+slider.value >= +slider.dataset.max || S.max >= +slider.dataset.max) { S.max = +slider.max; syncControls(); renderGrid(); }
+      slider.dataset.max = slider.max;
+    }
   } catch (err) { /* таблица недоступна — показываем всё как в наличии */ }
 }
 function dropSoldOutFromCart() {
