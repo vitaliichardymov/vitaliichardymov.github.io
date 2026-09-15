@@ -162,6 +162,11 @@ aside.filters{position:sticky;top:92px;display:grid;gap:28px}
 .badges{position:absolute;left:10px;top:10px;display:flex;gap:6px;z-index:2}
 .badge{font-size:.6875rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:6px;background:var(--raise);color:var(--ink)}
 .badge.sale{background:var(--sale);color:var(--bg)}
+.badge.out{background:var(--ink);color:var(--bg)}
+.tile.dim img.photo,.tile.dim svg{opacity:.45;filter:saturate(.5)}
+.add.out{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:8px 14px;font-size:.875rem;font-weight:500;white-space:nowrap}
+.sw.out{opacity:.35;position:relative}
+.sw.out::after{content:"";position:absolute;inset:50% 0 auto;height:1px;background:var(--ink);transform:rotate(-45deg)}
 .fav{position:absolute;right:8px;top:8px;z-index:2;width:36px;height:36px;border-radius:50%;border:0;display:grid;place-items:center;background:color-mix(in oklab,var(--raise) 80%,transparent);color:var(--ink)}
 .fav svg{width:18px;height:18px}
 .fav[aria-pressed="true"] svg{fill:var(--sale);stroke:var(--sale)}
@@ -483,6 +488,14 @@ dialog::backdrop{background:rgba(14,22,18,.45);backdrop-filter:blur(3px)}
 <script>
 (() => {
 "use strict";
+
+/* ==========================================================================
+   ПОДКЛЮЧЕНИЕ ТАБЛИЦЫ ЗАКАЗОВ (Google Apps Script)
+   Вставьте сюда адрес веб-приложения — он заканчивается на /exec.
+   Пока строка пустая, магазин работает в демо-режиме: заказ показывается
+   покупателю, но никуда не отправляется, а остатки не проверяются.
+   ========================================================================== */
+const SHOP_API = "";
 
 /* ---------- utils ---------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -2660,6 +2673,26 @@ function photoOf(p, ci = 0, n = 0) {
   const v = p.variants.find(x => x.ci === ci && x.photos.length) || p.variants.find(x => x.photos.length);
   return v && v.photos[n] ? v.photos[n] : null;
 }
+let STOCK = null;                       // {Артикул: остаток} — приходит из таблицы
+const vInStock = v => !STOCK || STOCK[v.sku] === undefined || STOCK[v.sku] > 0;
+const pInStock = p => p.variants.some(vInStock);
+const firstInStockCi = p => { const v = p.variants.find(vInStock) || p.variants[0]; return v.ci; };
+async function loadStock() {
+  if (!SHOP_API) return;
+  try {
+    const r = await fetch(SHOP_API, { method: "GET" });
+    const d = await r.json();
+    if (d && d.stock) { STOCK = d.stock; dropSoldOutFromCart(); update(); if ($("#cart-dlg").open) renderCart(); }
+  } catch (err) { /* таблица недоступна — показываем всё как в наличии */ }
+}
+function dropSoldOutFromCart() {
+  const gone = S.cart.filter(l => !vInStock(lineVariant(l)));
+  if (!gone.length) return;
+  S.cart = S.cart.filter(l => vInStock(lineVariant(l)));
+  saveCart(); renderCartCount();
+  toast(gone.length === 1 ? `${byId[gone[0].id].name} закончился — убрали из корзины`
+                          : `${gone.length} товара закончились — убрали из корзины`);
+}
 function photosOf(p, ci = 0) {
   const v = p.variants.find(x => x.ci === ci && x.photos.length);
   return v ? v.photos : [];
@@ -2744,12 +2777,14 @@ function renderMats() {
 /* ---------- render: grid ---------- */
 function cardHTML(p) {
   const inFav = S.fav.has(p.id);
+  const sold = !pInStock(p);
   const pi = priceInfo(p);
   const off = pi.old ? Math.round((1 - pi.min / pi.old) * 100) : 0;
-  const badges = [off ? `<span class="badge sale">−${off}%</span>` : "", p.badge ? `<span class="badge">${p.badge}</span>` : ""].join("");
+  const badges = sold ? `<span class="badge out">Нет в наличии</span>`
+    : [off ? `<span class="badge sale">−${off}%</span>` : "", p.badge ? `<span class="badge">${p.badge}</span>` : ""].join("");
   return `<article class="card">
     <div style="position:relative">
-      <button type="button" class="tile" style="--p:${p.colors[0].hex}" data-open="${p.id}" aria-label="Подробнее: ${esc(p.name)}">${art(p)}</button>
+      <button type="button" class="tile${sold ? " dim" : ""}" style="--p:${p.colors[0].hex}" data-open="${p.id}" aria-label="Подробнее: ${esc(p.name)}">${art(p)}</button>
       <div class="badges">${badges}</div>
       <button type="button" class="fav" data-fav="${p.id}" aria-pressed="${inFav}" aria-label="${inFav ? "Убрать из избранного" : "В избранное"}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 10c0 5.65-7 10-7 10z"/></svg>
@@ -2762,9 +2797,10 @@ function cardHTML(p) {
     </div>
     <div class="buy">
       <span class="price num"><b>${pi.multi ? "от " : ""}${fmt(pi.min)}</b>${pi.old ? `<s>${fmt(pi.old)}</s>` : ""}</span>
-      <button type="button" class="add" data-add="${p.id}">
+      ${sold ? `<span class="add out" aria-disabled="true">Нет в наличии</span>`
+        : `<button type="button" class="add" data-add="${p.id}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>В корзину
-      </button>
+      </button>`}
     </div>
   </article>`;
 }
@@ -2800,7 +2836,7 @@ const lineKey = (id, ci, size) => `${id}|${ci}|${size || ""}`;
 function lineVariant(l) { return variantOf(byId[l.id], l.ci, l.size); }
 function addToCart(id, ci = 0, size = null, qty = 1) {
   const p = byId[id];
-  if (p.sizes && !size) size = (p.variants.find(v => v.ci === ci) || p.variants[0]).size;
+  if (p.sizes && !size) size = (p.variants.find(v => v.ci === ci && vInStock(v)) || p.variants.find(v => v.ci === ci) || p.variants[0]).size;
   const key = lineKey(id, ci, size);
   const ex = S.cart.find(l => l.key === key);
   if (ex) ex.qty = Math.min(ex.qty + qty, 20); else S.cart.push({ key, id, ci, size, qty });
@@ -2898,12 +2934,15 @@ $$("dialog").forEach(d => {
 
 function openProduct(id) {
   const p = byId[id], d = $("#product-dlg");
-  let ci = 0, size = p.sizes ? (p.variants.find(v => v.ci === 0) || p.variants[0]).size : null, qty = 1, ph = 0;
-  const sizeAvailable = s => p.variants.some(v => v.ci === ci && v.size === s);
+  let ci = firstInStockCi(p), size = null, qty = 1, ph = 0;
+  if (p.sizes) { const v0 = p.variants.find(v => v.ci === ci && vInStock(v)) || p.variants.find(v => v.ci === ci) || p.variants[0]; size = v0.size; }
+  const sizeAvailable = s => p.variants.some(v => v.ci === ci && v.size === s && vInStock(v));
+  const colorAvailable = i => p.variants.some(v => v.ci === i && vInStock(v));
   const draw = () => {
     const col = p.colors[ci];
-    if (p.sizes && !sizeAvailable(size)) size = (p.variants.find(v => v.ci === ci) || p.variants[0]).size;
+    if (p.sizes && !sizeAvailable(size)) size = ((p.variants.find(v => v.ci === ci && vInStock(v)) || p.variants.find(v => v.ci === ci) || p.variants[0]).size);
     const v = variantOf(p, ci, size);
+    const canBuy = vInStock(v);
     const off = v.old ? Math.round((1 - v.price / v.old) * 100) : 0;
     const gal = photosOf(p, ci);
     if (ph >= Math.max(1, gal.length)) ph = 0;
@@ -2917,13 +2956,13 @@ function openProduct(id) {
         <div><p class="eyebrow">${esc(CATS.find(c => c.id === p.cat).name)}</p>
         <h2 id="pd-name" style="margin-top:8px">${esc(p.name)}</h2></div>
         <div class="price num"><b>${fmt(v.price)}</b>${v.old ? `<s>${fmt(v.old)}</s><span class="badge sale">−${off}%</span>` : ""}</div>
-        ${p.colors.length > 1 ? `<div><p class="opt-label">Цвет: <b>${esc(col.name)}</b></p><div class="swatches">${p.colors.map((c, i) => `<button type="button" class="sw" style="background:${c.hex}" data-ci="${i}" aria-pressed="${i === ci}" aria-label="${esc(c.name)}"></button>`).join("")}</div></div>` : ""}
+        ${p.colors.length > 1 ? `<div><p class="opt-label">Цвет: <b>${esc(col.name)}</b></p><div class="swatches">${p.colors.map((c, i) => `<button type="button" class="sw${colorAvailable(i) ? "" : " out"}" style="background:${c.hex}" data-ci="${i}" aria-pressed="${i === ci}" aria-label="${esc(c.name)}${colorAvailable(i) ? "" : " — нет в наличии"}"></button>`).join("")}</div></div>` : ""}
         ${p.sizes ? `<div><p class="opt-label">Размер: <b>${size}</b></p><div class="sizes">${p.sizes.map(s => `<button type="button" class="sz" data-size="${s}" aria-pressed="${s === size}" ${sizeAvailable(s) ? "" : "disabled title=\"Нет в наличии\""}>${s}</button>`).join("")}</div></div>` : ""}
         <div class="add-row">
           <span class="stepper"><button type="button" data-q="-1" aria-label="Меньше">−</button><span class="num">${qty}</span><button type="button" data-q="1" aria-label="Больше">+</button></span>
-          <button type="button" class="btn btn-primary" data-pd-add>Добавить в корзину</button>
+          <button type="button" class="btn btn-primary" data-pd-add ${canBuy ? "" : "disabled"}>${canBuy ? "Добавить в корзину" : "Нет в наличии"}</button>
         </div>
-        <p class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg>В наличии · по Москве завтра, по России от 2 дней</p>
+        <p class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg>${canBuy ? "В наличии · по Москве завтра, по России от 2 дней" : "Этого варианта сейчас нет — напишите нам, привезём под заказ"}</p>
         <p class="desc">${esc(p.desc)}</p>
         <div><p class="opt-label">Подходит для практик</p><div class="for">${p.practices.map(x => `<span>${esc(x)}</span>`).join("")}</div></div>
         <dl class="specs">${p.specs.map(([k, val]) => `<dt>${esc(k)}</dt><dd>${esc(val)}</dd>`).join("")}<dt>Артикул</dt><dd>${esc(v.sku)}</dd></dl>
@@ -2937,7 +2976,8 @@ function openProduct(id) {
     const sz = e.target.closest("[data-size]"); if (sz && !sz.disabled) { size = sz.dataset.size; draw(); d.querySelector(`[data-size="${size}"]`).focus(); return; }
     const th = e.target.closest("[data-ph]"); if (th) { ph = +th.dataset.ph; draw(); d.querySelector(`[data-ph="${ph}"]`).focus(); return; }
     const q = e.target.closest("[data-q]"); if (q) { qty = Math.max(1, Math.min(20, qty + +q.dataset.q)); d.querySelector(".add-row .stepper .num").textContent = qty; return; }
-    if (e.target.closest("[data-pd-add]")) { addToCart(p.id, ci, size, qty); d.close(); }
+    const addBtn = e.target.closest("[data-pd-add]");
+    if (addBtn && !addBtn.disabled) { addToCart(p.id, ci, size, qty); d.close(); }
   };
   openDlg(d);
 }
@@ -2972,14 +3012,14 @@ function openCheckout() {
       <fieldset>
         <legend>Оплата</legend>
         <div class="opts">
-          <label class="opt" for="f-pay-card"><input type="radio" name="pay" id="f-pay-card" value="card" checked><span>Картой онлайн<small>Visa, Mastercard, МИР</small></span><span></span></label>
-          <label class="opt" for="f-pay-sbp"><input type="radio" name="pay" id="f-pay-sbp" value="sbp"><span>СБП<small>по QR-коду из приложения банка</small></span><span></span></label>
-          <label class="opt" for="f-pay-cod"><input type="radio" name="pay" id="f-pay-cod" value="cod"><span>При получении<small>наличными или картой</small></span><span></span></label>
+          <label class="opt" for="f-pay-link"><input type="radio" name="pay" id="f-pay-link" value="link" checked><span>Ссылка на оплату<small>пришлём по СБП или картой после подтверждения</small></span><span></span></label>
+          <label class="opt" for="f-pay-cod"><input type="radio" name="pay" id="f-pay-cod" value="cod"><span>При получении<small>наличными или картой курьеру</small></span><span></span></label>
         </div>
         <div class="inp"><label for="f-comment">Комментарий курьеру (необязательно)</label><textarea id="f-comment" placeholder="Домофон, этаж, удобное время"></textarea></div>
+        <input type="text" id="f-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
       </fieldset>
       <button type="submit" class="btn btn-primary btn-block" id="co-submit"></button>
-      <p class="demo">Это демонстрационная версия магазина: заказ оформляется, но деньги не списываются.</p>
+      <p class="demo" id="co-note">${SHOP_API ? "Оплата онлайн пока не подключена: после заказа мы свяжемся и подтвердим состав, доставку и способ оплаты." : "Демо-режим: заказ не отправляется — магазин ещё не подключён к таблице заказов."}</p>
     </form>
     <aside>
       <h3>Ваш заказ</h3>
@@ -3028,20 +3068,51 @@ function openCheckout() {
     checks.forEach(([id, ok]) => { $(id).closest(".inp").classList.toggle("invalid", !ok); if (!ok && !first) first = $(id); });
     if (first) { first.focus(); return; }
     store.set("contact", { name: val("#f-name"), phone: val("#f-phone"), email: val("#f-email"), city: val("#f-city"), addr: val("#f-addr"), del });
-    const total = refresh();
+    const t = totals(), ship = (del !== "pickup" && t.sub >= FREE_FROM) ? 0 : DELIVERY[del].price;
+    const total = t.sub + ship;
     const now = new Date();
     const num = `YY-${String(now.getDate()).padStart(2, "0")}${String(now.getMonth() + 1).padStart(2, "0")}-${Math.floor(1000 + Math.random() * 9000)}`;
     const how = DELIVERY[del];
-    d.innerHTML = `<button type="button" class="icon-btn x" data-close aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    const payName = { link: "Ссылка на оплату", cod: "При получении" }[form.pay.value] || form.pay.value;
+    const itemsText = S.cart.map(l => {
+      const p = byId[l.id], v = lineVariant(l);
+      const vr = [p.colors.length > 1 ? p.colors[l.ci].name : null, l.size].filter(Boolean).join(", ");
+      return `${l.qty} × ${p.name}${vr ? ` (${vr})` : ""} — арт. ${v.sku} — ${fmt(v.price * l.qty)}`;
+    }).join("\n");
+    const order = {
+      number: num, name: val("#f-name"), phone: val("#f-phone"), email: val("#f-email"),
+      deliveryName: how.name, city: del === "pickup" ? "" : val("#f-city"),
+      address: del === "pickup" ? "Самовывоз" : val("#f-addr"), paymentName: payName,
+      itemsText, itemsTotal: t.items, discount: t.disc, shipping: ship, total,
+      promo: S.promo || "", comment: val("#f-comment"), website: val("#f-website"),
+      items: S.cart.map(l => ({ sku: lineVariant(l).sku, qty: l.qty, price: lineVariant(l).price }))
+    };
+    const btn = $("#co-submit");
+    const done = () => {
+      d.innerHTML = `<button type="button" class="icon-btn x" data-close aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       <div class="done-view">
         <svg viewBox="0 0 72 72" fill="none" stroke="currentColor" stroke-width="2"><circle cx="36" cy="36" r="33"/><circle cx="36" cy="36" r="22" opacity=".35"/><path d="m25 37 8 8 15-17"/></svg>
-        <h2>Заказ оформлен</h2>
+        <h2>Заказ принят</h2>
         <span class="ord">№ ${num}</span>
-        <p>Сумма ${fmt(total)}, ${how.name.toLowerCase()}. Позвоним на ${esc(val("#f-phone"))} в течение часа, чтобы подтвердить состав и время доставки. Чек и трек-номер придут на ${esc(val("#f-email"))}.</p>
-        <p class="demo" style="border:0">Демонстрационный режим: оплата не списывается.</p>
+        <p>Сумма ${fmt(total)}, ${how.name.toLowerCase()}. Позвоним на ${esc(val("#f-phone"))} в течение часа, чтобы подтвердить состав, доставку и оплату. Копию заказа отправим на ${esc(val("#f-email"))}.</p>
+        ${SHOP_API ? "" : `<p class="demo" style="border:0">Демо-режим: заказ никуда не отправлен.</p>`}
         <button type="button" class="btn btn-primary" data-close data-goto="catalog">Вернуться в каталог</button>
       </div>`;
-    S.cart = []; S.promo = null; saveCart(); renderCartCount();
+      S.cart = []; S.promo = null; saveCart(); renderCartCount();
+    };
+    if (!SHOP_API) { done(); return; }
+    btn.disabled = true; btn.textContent = "Отправляем…";
+    fetch(SHOP_API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(order) })
+      .then(r => r.json()).then(res => {
+        if (res && res.ok) done();
+        else throw new Error(res && res.error || "Не удалось отправить заказ");
+      })
+      .catch(() => {
+        btn.disabled = false; btn.textContent = `Подтвердить заказ на ${fmt(total)}`;
+        const note = $("#co-note");
+        note.className = "demo"; note.style.color = "var(--err)";
+        note.textContent = "Заказ не отправился — проверьте интернет и нажмите кнопку ещё раз. Если не выходит, позвоните нам: +7 900 000-00-00.";
+      });
   });
   openDlg(d);
 }
@@ -3070,7 +3141,7 @@ document.addEventListener("click", e => {
   const open = t.closest("[data-open]"); if (open) return openProduct(open.dataset.open);
   const add = t.closest("[data-add]");
   if (add) {
-    addToCart(add.dataset.add);
+    addToCart(add.dataset.add, firstInStockCi(byId[add.dataset.add]));
     add.classList.add("done"); add.lastChild.textContent = "Добавлено";
     setTimeout(() => { add.classList.remove("done"); add.lastChild.textContent = "В корзину"; }, 1400);
     return;
@@ -3100,7 +3171,7 @@ $("#filters-toggle").onclick = e => { const f = $("#filters"), o = f.classList.t
 
 /* ---------- boot ---------- */
 $("#hero-art").innerHTML = DRAW.mat("#5F7F66") + `<g transform="translate(116 68) scale(.5)">${DRAW.block("#C49A64", { speck: true })}</g>`;
-update(); renderCartCount();
+update(); renderCartCount(); loadStock();
 })();
 </script>
 </body></html>
